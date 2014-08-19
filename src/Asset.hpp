@@ -270,7 +270,7 @@ static inline bool
 HasColors()
 {
 #ifdef ANDROID
-  return !IsNookSimpleTouch();
+  return !IsNookSimpleTouch() && !IsOnyxEbook();
 #elif defined(GREYSCALE)
   return false;
 #else
@@ -313,7 +313,7 @@ static inline bool
 HasEPaper()
 {
 #if defined(ANDROID) && defined(__arm__)
-  return IsNookSimpleTouch();
+  return IsNookSimpleTouch() || IsOnyxEbook();
 #else
   return IsKobo();
 #endif
