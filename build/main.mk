@@ -698,6 +698,7 @@ XCSOAR_SOURCES += \
 	$(SRC)/Android/Environment.cpp \
 	$(SRC)/Android/Product.cpp \
 	$(SRC)/Android/Nook.cpp \
+	$(SRC)/Android/OnyxT.cpp \
 	$(SRC)/Android/InternalSensors.cpp \
 	$(SRC)/Android/SoundUtil.cpp \
 	$(SRC)/Android/TextUtil.cpp \

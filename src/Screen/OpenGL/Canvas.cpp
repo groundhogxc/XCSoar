@@ -46,23 +46,42 @@ AllocatedArray<RasterPoint> Canvas::vertex_buffer;
 /**
  * Inverts rectangle using GL blending effects (hardware accelerated):
  *
- * Drawing white (Draw_color=1,1,1) rectangle over the image with
- * GL_ONE_MINUS_DST_COLOR blending function yields
- * New_DST_color= Draw_Color*(1-Old_DST_Color)
+ * Drawing white (Draw_color=1,1,1) rectangle over the image with GL_ONE_MINUS_DST_COLOR
+ * blending function yields New_DST_color= Draw_Color*(1-Old_DST_Color)
+ *
+ * For devices with software rendering, use COLOR_LOGIC_OP XOR instead, 
+ * because it is faster
  */
 void
 Canvas::InvertRectangle(int left, int top, int right, int bottom)
 {
+#ifdef ANDROID
+  const bool use_XOR=IsOnyxEbook();
+#else
+  const bool use_XOR=false;
+#endif
+
   // Make sure alpha channel is not damaged
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 
-  glEnable(GL_BLEND);
-  // DST is overwritten part of image = old_DST_color
-  glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+  if (use_XOR) {
+    glEnable(GL_COLOR_LOGIC_OP);  /* In software rendering, XOR is MUCH faster. */
+    glLogicOp(GL_XOR);
+  } else {
+    glEnable(GL_BLEND);  /* Some hardware implementations have buggy 
+                            COLOR_LOGIC_OP implementation, GL_BLEND is safer*/
+
+    // DST is overwritten part of image = old_DST_color
+    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO); 
+  }
 
   DrawFilledRectangle(left, top, right, bottom, COLOR_WHITE);
 
-  glDisable(GL_BLEND);
+  if (use_XOR)
+    glDisable(GL_COLOR_LOGIC_OP);
+  else
+    glDisable(GL_BLEND);
+
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
