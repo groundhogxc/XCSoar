@@ -164,6 +164,7 @@ Java_org_xcsoar_NativeView_initializeNative(JNIEnv *env, jobject obj,
                                product);
 #ifdef __arm__
   is_nook = StringIsEqual(native_view->GetProduct(), "NOOK");
+  is_onyx_ebook = StringIsEqual(native_view->GetProduct(), "T68Lynx"); /* TODO: add Midia inkphone ID*/
 #endif
 
   event_queue = new EventQueue();
@@ -181,6 +182,9 @@ Java_org_xcsoar_NativeView_initializeNative(JNIEnv *env, jobject obj,
 
     /* enable USB host mode if this is a Nook */
     Nook::InitUsb();
+  }
+  if (IsOnyxEbook()) {
+    is_dithered=false; // Should really check state; or be "true" under the assumption that the user successfully activated A2 mode. "false" was deemed cleaner implementation, however
   }
 #endif
 

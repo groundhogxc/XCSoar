@@ -29,7 +29,7 @@ Copyright_License {
 extern bool has_cursor_keys;
 
 #ifdef __arm__
-extern bool is_nook, is_dithered;
+extern bool is_nook, is_onyx_ebook, is_dithered;
 #endif
 
 /**
@@ -61,6 +61,16 @@ IsNookSimpleTouch()
 {
 #ifdef __arm__
   return is_nook;
+#else
+  return false;
+#endif
+}
+
+static inline bool
+IsOnyxEbook()
+{
+#ifdef __arm__
+  return is_onyx_ebook;
 #else
   return false;
 #endif
