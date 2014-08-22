@@ -26,6 +26,8 @@ Copyright_License {
 #include "Screen/OpenGL/Globals.hpp"
 #include "Android/Main.hpp"
 #include "Android/NativeView.hpp"
+#include "Android/Product.hpp"
+
 #include "LogFile.hpp"
 
 void
@@ -43,6 +45,10 @@ TopCanvas::Create(PixelSize new_size, bool full_screen, bool resizable)
 void
 TopCanvas::Flip()
 {
+  // Workaround for spurious dither mode problemwith Onyx T68
+  if(IsOnyxEbook())
+    InvertRectangle(PixelRect(GetSize()));
+
 #ifdef USE_EGL
   if (!eglSwapBuffers(display, surface))
     LogFormat("eglSwapBuffers() failed: 0x%x", eglGetError());
