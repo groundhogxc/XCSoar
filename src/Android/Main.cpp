@@ -38,6 +38,7 @@ Copyright_License {
 #include "LogCat.hpp"
 #include "Product.hpp"
 #include "Nook.hpp"
+#include "Android/OnyxT.hpp"
 #include "Language/Language.hpp"
 #include "Language/LanguageGlue.hpp"
 #include "LocalPath.hpp"
@@ -185,7 +186,8 @@ Java_org_xcsoar_NativeView_initializeNative(JNIEnv *env, jobject obj,
     Nook::InitUsb();
   }
   if (IsOnyxEbook()) {
-    is_dithered=false; // Should really check state; or be "true" under the assumption that the user successfully activated A2 mode. "false" was deemed cleaner implementation, however
+    if(OnyxT::Initialize(native_view,env))
+      is_dithered=OnyxT::EnterFastMode();
   }
 #endif
 
@@ -223,6 +225,10 @@ Java_org_xcsoar_NativeView_deinitializeNative(JNIEnv *env, jobject obj)
 
   if (IsNookSimpleTouch()) {
     Nook::ExitFastMode();
+  }
+
+  if (IsOnyxEbook()) {
+    OnyxT::ExitFastMode();
   }
 
   StopLogCat();

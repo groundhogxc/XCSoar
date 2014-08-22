@@ -206,6 +206,7 @@ Version 6.8 - 2015/08/18
 * Linux
   - Wayland support
 * Android
+  - Enable dithering for Onyx T68 (workaround for firmware bug)
   - Identify Onyx Boox T68 device and set e-paper/has color flags
   - fix IOIO connection on Android 4.x (#2959, #3260)
   - support IOIO-OTG with the Android device in USB host mode

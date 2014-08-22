@@ -69,18 +69,35 @@ Canvas::InvertRectangle(PixelRect r)
    * Drawing white (Draw_color=1,1,1) rectangle over the image with GL_ONE_MINUS_DST_COLOR
    * blending function yields New_DST_color= Draw_Color*(1-Old_DST_Color)
    *
+   * For devices with software rendering, use COLOR_LOGIC_OP XOR instead, because it is faster
    */
+
+#ifdef ANDROID
+  const bool use_XOR=IsOnyxEbook();
+#else
+  const bool use_XOR=false;
+#endif
 
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE); // Make sure alpha channel is not damaged
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO); // DST is overwritten part of image = old_DST_color
+  if(use_XOR){
+    glEnable(GL_COLOR_LOGIC_OP);  /* In software rendering, XOR is MUCH faster. */
+    glLogicOp(GL_XOR);
+  } else
+  {
+    glEnable(GL_BLEND);  /* Some hardware implementations have buggy COLOR_LOGIC_OP implementation, GL_BLEND is safer*/
+    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO); // DST is overwritten part of image = old_DST_color
+  }
 
-  const Color cwhite(0xff, 0xff, 0xff); // Draw color white (source channel of blender)
+  const Color cwhite(0xff, 0xff, 0xff); // Draw color white (source channel of blender / bits for XOR)
 
   DrawFilledRectangle(r, cwhite);
 
-  glDisable(GL_BLEND);
+  if(use_XOR)
+    glDisable(GL_COLOR_LOGIC_OP);
+  else
+    glDisable(GL_BLEND);
+
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
