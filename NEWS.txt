@@ -5,6 +5,8 @@ SUMMARY OF NEW FEATURES AND BUG FIXES SINCE V4.0
 Version 6.7.8.gh - not yet released patches
 * display
   - improved gauge readability on non-Kobo ebook/grayscale devices (#3417)
+* user interface 
+  - open long lists with selected item near center of screen
 
 Version 6.7.7 - 2015/02/20
 * airspace
@@ -20,6 +22,7 @@ Version 6.7.7 - 2015/02/20
   - allow '_' character in event identifiers (#3464)
 * replay
   - fix replay progress while replay is paused (#3446)
+
 
 Version 6.7.6 - 2014/10/18
 * tracking
