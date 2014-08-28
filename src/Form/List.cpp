@@ -280,14 +280,46 @@ ListControl::SetLength(unsigned n)
   SetCursorIndex(cursor);
 }
 
+/**
+ * Ensure item i (usually the selected one) is among the currently visible items of the list,
+ * scroll the list up or down if necessary
+ *
+ * If item i is originally significantly outside the screen (more than half of visible list length
+ * above/below currently visible part), jump to & center selected item, otherwise scroll
+ * until item appears at edge of screen
+ */
+
 void
 ListControl::EnsureVisible(unsigned i)
 {
   assert(i < length);
 
-  if (origin > i || (origin == i && pixel_pan > 0)) {
+  if (origin > i+items_visible/2) { // big jump up
+    SetOrigin(i<items_visible/2 ? 0 : i-items_visible/2 );
+  } else if (origin > i || (origin == i && pixel_pan > 0)) { //small jump up
     SetOrigin(i);
     SetPixelPan(0);
+  } else if (origin + items_visible+items_visible/2 < i){ //big jump down
+
+    if (UsePixelPan()) {
+      if(i+items_visible/2 > length)
+        SetOrigin(length - items_visible);
+      else
+        SetOrigin(i-items_visible/2);
+
+      if (origin > 0 || i >= items_visible)
+        SetPixelPan(((items_visible + 1) * item_height - GetHeight()) % item_height);
+
+    } else { // small jump down
+      /* no pixel panning on e-paper screens to avoid tearing */
+      if(i+items_visible/2 > length)
+        SetOrigin(length - items_visible);
+      else
+        SetOrigin(i-items_visible/2);
+
+    }
+
+
   } else if (origin + items_visible <= i) {
     if (UsePixelPan()) {
       SetOrigin(i - items_visible);
@@ -301,6 +333,9 @@ ListControl::EnsureVisible(unsigned i)
   }
 }
 
+/**
+ * Set the cursor to item i, while also ensuring the item i is visible on the screen
+ */
 bool
 ListControl::SetCursorIndex(unsigned i)
 {
