@@ -181,6 +181,7 @@ Version 6.8 - 2015/08/18
   - show airspace warning at bottom (#1378, #2628, #3275)
   - profile manager
   - password-protected profiles (#851)
+  - open long lists with selected item near center of screen
   - checklist remembers last opened list (#3110)
   - use configured coordinate format in waypoint editor
   - remove custom font support, replaced with global "text size" setting
