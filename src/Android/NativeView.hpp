@@ -27,6 +27,7 @@ Copyright_License {
 #include "Java/Object.hxx"
 #include "Java/Class.hxx"
 #include "Java/String.hxx"
+#include "string.h"
 
 #ifndef NO_SCREEN
 #include "Screen/Point.hpp"
@@ -85,6 +86,15 @@ public:
      width(_width), height(_height),
      xdpi(_xdpi), ydpi(_ydpi) {
     Java::String::CopyTo(env, _product, product, sizeof(product));
+
+    // Quite a few Android devices, including some popular ones, return wildly inaccurate xdpi/ydpi values
+     if(strcmp(product, "evita")     == 0 ||
+        strcmp(product, "endeavoru") == 0)      // HTC One X
+       xdpi=ydpi=312;
+     else if (strcmp(product, "occam") == 0 )   // Nexus 4
+       xdpi=ydpi=318;
+     else if (strcmp(product, "T68Lynx") == 0 ) // Onyx Boox T68
+       xdpi=ydpi=264;
   }
 
 #ifndef NO_SCREEN
