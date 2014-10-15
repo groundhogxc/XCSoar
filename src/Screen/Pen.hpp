@@ -26,6 +26,11 @@ Copyright_License {
 
 #include "Screen/Color.hpp"
 #include "Screen/Features.hpp"
+
+#ifdef ENABLE_OPENGL
+#include "Screen/OpenGL/Globals.hpp"
+#endif
+
 #include "Debug.hpp"
 
 #include <assert.h>
@@ -179,10 +184,12 @@ public:
   void Set() const {
     color.Set();
 
+    // GL behavior seems to be undefined when requesting larger than supported width
+    const unsigned glWidth=width > OpenGL::max_linewidth ? OpenGL::max_linewidth : width;
 #ifdef HAVE_GLES
-    glLineWidthx(width << 16);
+    glLineWidthx(glWidth << 16);
 #else
-    glLineWidth(width);
+    glLineWidth(glWidth);
 #endif
   }
 
