@@ -30,6 +30,7 @@ namespace OpenGL {
 #endif
 
   bool texture_non_power_of_two;
+  int max_linewidth;
 
 #ifdef HAVE_OES_DRAW_TEXTURE
   bool oes_draw_texture;

@@ -183,6 +183,19 @@ SupportsNonPowerOfTwoTextures()
     (HaveGLES() && SupportsNonPowerOfTwoTexturesGLES());
 }
 
+/**
+ * Does the current OpenGL context support lines with >1 width?
+ * Returns the maximum line width
+ */
+gcc_pure
+static int SupportedMaximumLinewidth()
+{
+  GLint LWrange[2];
+
+  glGetIntegerv(GL_ALIASED_LINE_WIDTH_RANGE, LWrange);
+  return LWrange[1];
+}
+
 gcc_pure
 static bool
 CheckFBO()
@@ -265,6 +278,7 @@ OpenGL::SetupContext()
 #endif
 
   texture_non_power_of_two = SupportsNonPowerOfTwoTextures();
+  max_linewidth = SupportedMaximumLinewidth();
 
 #ifdef HAVE_OES_DRAW_TEXTURE
   oes_draw_texture = CheckOESDrawTexture();

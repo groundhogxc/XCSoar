@@ -211,7 +211,7 @@ Startup()
 #ifdef HAVE_OES_DRAW_TEXTURE
             "oesdt=%d "
 #endif
-            "npot=%d vbo=%d fbo=%d stencil=%#x",
+            "npot=%d vbo=%d fbo=%d stencil=%#x mlw=%d",
 #ifdef HAVE_DYNAMIC_EGL
              OpenGL::egl,
 #endif
@@ -221,7 +221,8 @@ Startup()
              OpenGL::texture_non_power_of_two,
              OpenGL::vertex_buffer_object,
             OpenGL::frame_buffer_object,
-            OpenGL::render_buffer_stencil);
+            OpenGL::render_buffer_stencil,
+            OpenGL::max_linewidth);
 #endif
 
   main_window->Initialise();

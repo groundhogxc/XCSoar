@@ -54,6 +54,13 @@ namespace OpenGL {
    */
   extern bool texture_non_power_of_two;
 
+  /**
+   * Can we render lines with linewidth>1 directly?
+   * This variable contains the maximum line width
+   * If it is 1, or smaller than the width requested, we will need to use Polygons instead for thick lines
+   */
+  extern int max_linewidth;
+
 #ifdef HAVE_OES_DRAW_TEXTURE
   /**
    * Shall we use the OES_draw_texture extension?
