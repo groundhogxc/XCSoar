@@ -27,6 +27,7 @@ Copyright_License {
 
 namespace OpenGL {
   bool texture_non_power_of_two;
+  unsigned int max_linewidth;
 
 #ifdef HAVE_OES_DRAW_TEXTURE
   bool oes_draw_texture;
