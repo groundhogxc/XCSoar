@@ -26,6 +26,11 @@ Copyright_License {
 
 #include "Screen/Color.hpp"
 #include "Screen/Features.hpp"
+
+#ifdef ENABLE_OPENGL
+#include "Screen/OpenGL/Globals.hpp"
+#endif
+
 #include "Debug.hpp"
 
 #include <assert.h>
@@ -187,10 +192,11 @@ public:
 #ifdef ENABLE_OPENGL
 private:
   void BindStyle() const {
+    const unsigned glWidth=width > OpenGL::max_linewidth ? OpenGL::max_linewidth : width; // GL behavior seems to be undefined otherwise
 #if defined(HAVE_GLES) && !defined(HAVE_GLES2)
-    glLineWidthx(width << 16);
+    glLineWidthx(glWidth << 16);
 #else
-    glLineWidth(width);
+    glLineWidth(glWidth);
 #endif
 
 #ifndef HAVE_GLES
