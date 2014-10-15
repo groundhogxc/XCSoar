@@ -114,6 +114,10 @@ namespace Layout
     return (x * (int)small_scale) >> 10;
   }
 
+  /**
+   * Scale linewidth according to screen pixel size
+   * @param width input line width to be scaled
+   */
   gcc_const
   static inline unsigned
   ScalePenWidth(unsigned width)
@@ -122,6 +126,27 @@ namespace Layout
       return width;
 
     return (width * pen_width_scale) >> 10;
+  }
+
+  /**
+   * Scale linewidth in lazy way
+   *
+   * Only scale when scaling factor is at least two, to avoid changing
+   * the look in almost all older devices
+   *
+   * @param width input line width to be scaled
+   */
+  gcc_const
+  static inline unsigned
+  ScalePenWidthLazy(unsigned width)
+  {
+    if (!ScaleSupported())
+      return width;
+
+    if (pen_width_scale > 2<<10)
+      return (width * pen_width_scale) >> 10;
+    else
+      return width;
   }
 
   /**

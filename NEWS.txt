@@ -10,6 +10,8 @@ Version 6.7.8.gh - not yet released patches
 * Android
   - Identify Onyx Boox T68 device and set e-paper/has color flags
   - Enable dithering for Onyx T68 (workaround for firmware bug)
+* map display
+  - make topography (roads, rivers) pixel-density-aware (#3267, partially)
 
 Version 6.7.7 - 2015/02/20
 * airspace
