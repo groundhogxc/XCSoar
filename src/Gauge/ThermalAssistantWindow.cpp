@@ -24,6 +24,7 @@
 #include "ThermalAssistantWindow.hpp"
 #include "Look/ThermalAssistantLook.hpp"
 #include "Screen/Canvas.hpp"
+#include "Asset.hpp"
 
 #ifdef ENABLE_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
@@ -66,7 +67,7 @@ ThermalAssistantWindow::OnPaintBuffer(Canvas &canvas)
 {
 #ifdef ENABLE_OPENGL
   if (transparent) {
-    const ScopeAlphaBlend alpha_blend;
+    const ScopeAlphaBlend alpha_blend(!IsDithered()); // No transparency of TA on dithered screens
 
     canvas.SelectBlackPen();
     canvas.Select(Brush(COLOR_WHITE.WithAlpha(0xd0)));

@@ -167,7 +167,7 @@ ThermalAssistantRenderer::PaintPoints(Canvas &canvas,
                                     const LiftPoints &lift_points) const
 {
 #ifdef ENABLE_OPENGL
-  const ScopeAlphaBlend alpha_blend;
+  const ScopeAlphaBlend alpha_blend(!IsDithered());
 #elif defined(USE_GDI)
   canvas.SetMixMask();
 #endif /* GDI */
