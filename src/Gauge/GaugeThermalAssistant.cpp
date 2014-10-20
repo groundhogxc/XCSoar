@@ -27,6 +27,7 @@ Copyright_License {
 #include "Screen/Canvas.hpp"
 #include "Blackboard/LiveBlackboard.hpp"
 #include "Input/InputEvents.hpp"
+#include "Asset.hpp"
 
 #ifdef ENABLE_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
@@ -129,7 +130,7 @@ GaugeThermalAssistantWindow::OnPaint(Canvas &canvas)
 
   if (pressed) {
 #ifdef ENABLE_OPENGL
-    const ScopeAlphaBlend alpha_blend;
+    const ScopeAlphaBlend alpha_blend(!IsDithered());
 
     canvas.SelectNullPen();
     canvas.Select(Brush(COLOR_YELLOW.WithAlpha(80)));

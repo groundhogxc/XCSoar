@@ -105,7 +105,7 @@ ThermalBandRenderer::DrawThermalProfile(const ThermalBand &thermal_band,
   const Pen *pen = is_infobox ? nullptr : (active? &look.pen_active : &look.pen_inactive);
   const Brush& brush = active? look.brush_active : look.brush_inactive;
 
-  if (!is_infobox) {
+  if (!is_infobox && !IsDithered()) {
 #ifdef ENABLE_OPENGL
     const ScopeAlphaBlend alpha_blend;
 #endif
