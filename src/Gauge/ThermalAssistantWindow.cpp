@@ -24,6 +24,7 @@
 #include "ThermalAssistantWindow.hpp"
 #include "Look/ThermalAssistantLook.hpp"
 #include "Screen/Canvas.hpp"
+#include "Asset.hpp"
 
 #ifdef ENABLE_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
@@ -66,11 +67,16 @@ ThermalAssistantWindow::OnPaintBuffer(Canvas &canvas)
 {
 #ifdef ENABLE_OPENGL
   if (transparent) {
-    const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     canvas.SelectBlackPen();
-    canvas.Select(Brush(COLOR_WHITE.WithAlpha(0xd0)));
-    DrawCircle(canvas);
+
+    if (!IsDithered()) {
+      const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      canvas.Select(Brush(COLOR_WHITE.WithAlpha(0xd0)));
+      DrawCircle(canvas);
+    } else {
+      canvas.Select(Brush(COLOR_WHITE));
+      DrawCircle(canvas);
+    }
   } else
 #endif
     canvas.Clear(renderer.GetLook().background_color);

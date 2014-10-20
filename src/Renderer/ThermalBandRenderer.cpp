@@ -31,6 +31,7 @@ Copyright_License {
 #include "Units/Units.hpp"
 #include "Screen/Layout.hpp"
 
+
 #ifdef ENABLE_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
@@ -136,7 +137,7 @@ ThermalBandRenderer::_DrawThermalBand(const MoreData &basic,
     for (int i = 0; i < numtherm; ++i)
       thermal_profile.emplace_back(Wt[i], ht[i]);
 
-    if (!is_infobox) {
+    if (!is_infobox && !IsDithered()) {
 #ifdef ENABLE_OPENGL
       const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif

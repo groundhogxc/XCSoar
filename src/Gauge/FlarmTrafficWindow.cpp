@@ -724,12 +724,16 @@ FlarmTrafficWindow::OnPaint(Canvas &canvas)
 {
 #ifdef ENABLE_OPENGL
   if (small) {
-    const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     canvas.SelectBlackPen();
-    canvas.Select(Brush(look.background_color.WithAlpha(0xd0)));
-    canvas.DrawCircle(radar_mid.x, radar_mid.y, radius);
-
+    if (!IsDithered()) {
+      const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      canvas.Select(Brush(look.background_color.WithAlpha(0xd0)));
+      canvas.DrawCircle(radar_mid.x, radar_mid.y, radius);
+    } else {
+      canvas.Select(Brush(look.background_color));
+      canvas.DrawCircle(radar_mid.x, radar_mid.y, radius);
+    }
   } else
 #endif
     canvas.Clear(look.background_color);
