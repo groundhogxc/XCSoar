@@ -137,11 +137,16 @@ ThermalBandRenderer::_DrawThermalBand(const MoreData &basic,
     for (int i = 0; i < numtherm; ++i)
       thermal_profile.emplace_back(Wt[i], ht[i]);
 
-    if (!is_infobox && !IsDithered()) {
+    if (!is_infobox) {
+      if (!IsDithered()) {
 #ifdef ENABLE_OPENGL
-      const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
-      chart.DrawFilledY(thermal_profile, look.brush, fpen);
+        chart.DrawFilledY(thermal_profile, look.brush, fpen);
+      } else {
+        chart.DrawFilledY(thermal_profile, look.hollow_brush, &look.outline_pen);
+        chart.DrawFilledY(thermal_profile, look.brush, fpen);
+      }
     } else
       chart.DrawFilledY(thermal_profile, look.brush, fpen);
   }

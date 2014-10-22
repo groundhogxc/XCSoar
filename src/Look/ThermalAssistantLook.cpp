@@ -29,7 +29,7 @@ void
 ThermalAssistantLook::Initialise(bool small, bool inverse)
 {
   background_color = COLOR_WHITE;
-  circle_color = Color(0xB0, 0xB0, 0xB0);
+  circle_color = IsDithered() ? COLOR_BLACK : Color(0xB0, 0xB0, 0xB0);
   text_color = Color(0x00, 0x00, 0x00);
   polygon_fill_color = Color(0xCC, 0xCC, 0xFF);
   polygon_border_color = Color(0x00, 0x00, 0xFF);

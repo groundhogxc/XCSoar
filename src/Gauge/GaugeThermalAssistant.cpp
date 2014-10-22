@@ -27,6 +27,7 @@ Copyright_License {
 #include "Screen/Canvas.hpp"
 #include "Blackboard/LiveBlackboard.hpp"
 #include "Input/InputEvents.hpp"
+#include "Asset.hpp"
 
 #ifdef USE_GDI
 #include "Screen/Canvas.hpp"
@@ -135,12 +136,15 @@ GaugeThermalAssistantWindow::OnPaint(Canvas &canvas)
 
   if (pressed) {
 #ifdef ENABLE_OPENGL
-    const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     canvas.SelectNullPen();
-    canvas.Select(Brush(COLOR_YELLOW.WithAlpha(80)));
-
-    DrawCircle(canvas);
+    if (!IsDithered()) {
+      const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      canvas.Select(Brush(COLOR_YELLOW.WithAlpha(80)));
+      DrawCircle(canvas);
+    } else {
+      canvas.Select(Brush(COLOR_BLACK));
+      DrawCircle(canvas);
+    }
 #else
     canvas.InvertRectangle(GetClientRect());
 #endif

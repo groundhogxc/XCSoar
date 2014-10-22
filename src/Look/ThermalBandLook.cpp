@@ -23,6 +23,7 @@ Copyright_License {
 
 #include "ThermalBandLook.hpp"
 #include "Screen/Layout.hpp"
+#include "Asset.hpp"
 
 static Color
 ColorWithAlpha(const Color &c, uint8_t a)
@@ -40,7 +41,14 @@ ThermalBandLook::Initialise(bool _inverse, Color sky_color)
   inverse = _inverse;
 
   brush.Set(ColorWithAlpha(sky_color, 0xA0));
-  pen.Set(Layout::ScalePenWidth(1), DarkColor(sky_color));
+  // hollow_brush is already initialized to hollow by default constructor
+
+  if (!IsDithered())
+    pen.Set(Layout::ScalePenWidth(1), DarkColor(sky_color));
+  else
+    pen.Set(Layout::ScalePenWidth(1), COLOR_BLACK);
+
+  outline_pen.Set(Layout::ScalePenWidth(3), COLOR_WHITE);
 
   white_pen.Set(2, COLOR_WHITE);
   black_pen.Set(2, COLOR_BLACK);

@@ -24,17 +24,30 @@ Copyright_License {
 #include "TrafficLook.hpp"
 #include "Screen/Layout.hpp"
 #include "Resources.hpp"
+#include "Asset.hpp"
+#include "Screen/Color.hpp"
 
 void
 TrafficLook::Initialise(const Font &_font)
 {
-  safe_color = Color(0x1d,0x9b,0xc5);
-  warning_color = Color(0xfe,0x84,0x38);
-  alarm_color = Color(0xfb,0x35,0x2f);
+  if (HasColors()) {
+    safe_color = Color(0x1d,0x9b,0xc5);
+    warning_color = Color(0xfe,0x84,0x38);
+    alarm_color = Color(0xfb,0x35,0x2f);
 
-  safe_brush.Set(safe_color);
-  warning_brush.Set(warning_color);
-  alarm_brush.Set(alarm_color);
+    safe_brush.Set(safe_color);
+    warning_brush.Set(warning_color);
+    alarm_brush.Set(alarm_color);
+  } else {
+    safe_color =    COLOR_GRAY;
+    warning_color = COLOR_GRAY;
+    alarm_color =   COLOR_BLACK;
+
+    safe_brush.Set(COLOR_WHITE);
+    warning_brush.Set(COLOR_GRAY);
+    alarm_brush.Set(COLOR_BLACK);
+  }
+
 
   UPixelScalar width = Layout::ScalePenWidth(2);
   team_pen_green.Set(width, Color(0x74, 0xFF, 0));
