@@ -35,7 +35,10 @@ FlarmTrafficLook::Initialise(const TrafficLook &other, bool small, bool inverse)
   default_color = inverse ? COLOR_WHITE : COLOR_BLACK;
   selection_color = COLOR_BLUE;
   background_color = inverse ? COLOR_BLACK : COLOR_WHITE;
-  radar_color = COLOR_GRAY;
+  if (!IsDithered())
+    radar_color = COLOR_GRAY;
+  else
+    radar_color = COLOR_BLACK;
 
   warning_brush.Create(warning_color);
   alarm_brush.Create(alarm_color);

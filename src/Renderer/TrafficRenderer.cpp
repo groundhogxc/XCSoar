@@ -58,8 +58,8 @@ TrafficRenderer::Draw(Canvas &canvas, const TrafficLook &traffic_look,
     break;
   }
 
-  // Select black pen
-  canvas.SelectBlackPen();
+  // Select outline pen
+  canvas.Select(traffic_look.plane_outline_pen);
 
   // Rotate and shift the arrow to the right position and angle
   PolygonRotateShift(arrow, ARRAY_SIZE(arrow), pt, angle);
