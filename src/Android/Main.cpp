@@ -143,7 +143,8 @@ Java_org_xcsoar_NativeView_initializeNative(JNIEnv *env, jobject obj,
 
 #ifdef __arm__
   is_nook = strcmp(native_view->GetProduct(), "NOOK") == 0;
-  is_onyx_ebook = strcmp(native_view->GetProduct(), "T68Lynx")==0; /* TODO: add Midia inkphone ID*/
+  is_onyx_ebook = strcmp(native_view->GetProduct(), "T68Lynx") == 0
+               || strcmp(native_view->GetProduct(), "T68") == 0;
 #endif
 
   event_queue = new EventQueue();
