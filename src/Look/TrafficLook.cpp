@@ -24,6 +24,8 @@ Copyright_License {
 #include "TrafficLook.hpp"
 #include "Screen/Layout.hpp"
 #include "Resources.hpp"
+#include "Asset.hpp"
+#include "Screen/Color.hpp"
 
 constexpr Color TrafficLook::team_color_green;
 constexpr Color TrafficLook::team_color_magenta;
@@ -33,15 +35,23 @@ constexpr Color TrafficLook::team_color_yellow;
 void
 TrafficLook::Initialise(const Font &_font)
 {
-  safe_color = Color(0x1d,0x9b,0xc5);
-  warning_color = Color(0xfe,0x84,0x38);
-  alarm_color = Color(0xfb,0x35,0x2f);
+  if (HasColors()) {
+    safe_color = Color(0x1d,0x9b,0xc5);
+    warning_color = Color(0xfe,0x84,0x38);
+    alarm_color = Color(0xfb,0x35,0x2f);
+  } else {
+    safe_color =    COLOR_WHITE;
+    warning_color = COLOR_GRAY;
+    alarm_color =   COLOR_BLACK;
+  }
 
   safe_brush.Create(safe_color);
   warning_brush.Create(warning_color);
   alarm_brush.Create(alarm_color);
+  
+  plane_outline_pen.Create(2, COLOR_BLACK);
 
-  unsigned width = Layout::ScalePenWidth(4);
+  unsigned width = 4;
   team_pen_green.Create(width, team_color_green);
   team_pen_blue.Create(width, team_color_blue);
   team_pen_yellow.Create(width, team_color_yellow);
