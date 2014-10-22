@@ -165,7 +165,8 @@ Java_org_xcsoar_NativeView_initializeNative(JNIEnv *env, jobject obj,
                                product);
 #ifdef __arm__
   is_nook = StringIsEqual(native_view->GetProduct(), "NOOK");
-  is_onyx_ebook = StringIsEqual(native_view->GetProduct(), "T68Lynx"); /* TODO: add Midia inkphone ID*/
+  is_onyx_ebook = StringIsEqual(native_view->GetProduct(), "T68Lynx")
+                  || StringIsEqual(native_view->GetProduct(), "T68");
 #endif
 
   event_queue = new EventQueue();
