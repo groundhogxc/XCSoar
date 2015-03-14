@@ -55,7 +55,7 @@ Copyright_License {
 #include "Engine/Contest/Solvers/Contests.hpp"
 #include "Event/Timer.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scissor.hpp"
 #endif
 
@@ -344,7 +344,7 @@ ChartControl::OnPaint(Canvas &canvas)
   const ProtectedTaskManager *const protected_task_manager =
     &glide_computer.GetProtectedTaskManager();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* enable clipping */
   GLCanvasScissor scissor(canvas);
 #endif

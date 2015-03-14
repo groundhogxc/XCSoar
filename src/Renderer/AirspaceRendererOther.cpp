@@ -21,7 +21,7 @@ Copyright_License {
 }
 */
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 
 #include "AirspaceRenderer.hpp"
 #include "AirspaceRendererSettings.hpp"
@@ -293,4 +293,4 @@ AirspaceRenderer::DrawInternal(Canvas &canvas, Canvas &stencil_canvas,
   DrawOutline(canvas, projection, settings, visible);
 }
 
-#endif /* ENABLE_OPENGL */
+#endif /* RENDER_OPENGL */

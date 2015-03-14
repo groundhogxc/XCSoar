@@ -23,7 +23,7 @@ Copyright_License {
 
 #include "DrawThread.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 
 #include "MapWindow/GlueMapWindow.hpp"
 #include "Hardware/CPU.hpp"

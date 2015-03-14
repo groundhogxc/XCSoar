@@ -48,7 +48,7 @@ class ResourceId;
 class UncompressedImage;
 template<typename T> struct ConstBuffer;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 class GLTexture;
 #elif !defined(USE_GDI)
 #ifdef GREYSCALE
@@ -91,7 +91,7 @@ protected:
   tstring pathName;
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLTexture *texture;
   PixelSize size;
 
@@ -103,7 +103,7 @@ protected:
 #endif
 
 public:
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   Bitmap()
     :
 #ifdef ANDROID
@@ -111,7 +111,11 @@ public:
 #endif
     texture(nullptr), interpolation(false) {}
 #elif defined(USE_MEMORY_CANVAS)
-  constexpr Bitmap():buffer(WritableImageBuffer<BitmapPixelTraits>::Empty()) {}
+  Bitmap():
+#ifdef ANDROID
+    id(ResourceId::Null()),
+#endif
+    buffer(WritableImageBuffer<BitmapPixelTraits>::Empty()) {}
 #else
   Bitmap():bitmap(nullptr) {}
 #endif
@@ -130,7 +134,7 @@ public:
   Bitmap &operator=(const Bitmap &other) = delete;
 public:
   bool IsDefined() const {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     return texture != nullptr;
 #elif defined(USE_MEMORY_CANVAS)
     return buffer.data != nullptr;
@@ -139,7 +143,7 @@ public:
 #endif
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   unsigned GetWidth() const {
     return size.cx;
   }
@@ -165,7 +169,7 @@ public:
   }
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   void EnableInterpolation();
 #else
   void EnableInterpolation() {}
@@ -189,7 +193,7 @@ public:
 
   const PixelSize GetSize() const;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLTexture *GetNative() const {
     return texture;
   }

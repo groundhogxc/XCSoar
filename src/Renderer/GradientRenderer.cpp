@@ -24,7 +24,7 @@ Copyright_License {
 #include "GradientRenderer.hpp"
 #include "Screen/Canvas.hpp"
 
-#if defined(EYE_CANDY) && defined(ENABLE_OPENGL)
+#if defined(EYE_CANDY) && defined(RENDER_OPENGL)
 
 #include "Screen/OpenGL/VertexPointer.hpp"
 #include "Util/Macros.hpp"
@@ -35,7 +35,7 @@ void
 DrawVerticalGradient(Canvas &canvas, const PixelRect &rc,
                      Color top_color, Color bottom_color, Color fallback_color)
 {
-#if defined(EYE_CANDY) && defined(ENABLE_OPENGL)
+#if defined(EYE_CANDY) && defined(RENDER_OPENGL)
   const RasterPoint vertices[] = {
     rc.GetTopLeft(),
     rc.GetTopRight(),

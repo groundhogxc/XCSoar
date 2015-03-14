@@ -24,7 +24,7 @@ Copyright_License {
 #ifndef XCSOAR_SCREEN_DOUBLE_BUFFER_WINDOW_HXX
 #define XCSOAR_SCREEN_DOUBLE_BUFFER_WINDOW_HXX
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 #include "BufferWindow.hpp"
 

@@ -38,7 +38,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -702,7 +702,7 @@ FlarmTrafficWindow::Paint(Canvas &canvas)
 void
 FlarmTrafficWindow::OnPaint(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   if (small) {
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

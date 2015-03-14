@@ -30,6 +30,9 @@ Copyright_License {
 #include "Screen/Memory/PixelTraits.hpp"
 #include "Screen/Memory/ActivePixelTraits.hpp"
 #include "Screen/Memory/Buffer.hpp"
+#include "Screen/Memory/Point.hpp"
+/*  TODO ANDROIDMEM: Check if this is the correct Point -- Points are not being
+used for render coordinates here, but want to avoid collisions, so using Memory version */
 #else
 #include "Screen/Canvas.hpp"
 #endif
@@ -66,7 +69,9 @@ struct SDL_Surface;
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
+#if !(defined(USE_MEMORY_BUFFER) && defined(ENABLE_OPENGL))
 class Canvas;
+#endif
 struct PixelSize;
 struct PixelRect;
 
@@ -129,6 +134,13 @@ class TopCanvas
 #endif
 
 #ifdef USE_MEMORY_CANVAS
+
+#ifdef ENABLE_OPENGL
+  PixelSize size;
+  PixelSize GetSize() const {
+    return size;
+  }
+#endif
 
 #ifdef GREYSCALE
   WritableImageBuffer<GreyscalePixelTraits> buffer;
@@ -202,8 +214,10 @@ public:
 #endif
 #elif defined(USE_VFB)
     return true;
-#else
+#elif defined(USE_FB)
     return fd >= 0;
+#else
+    // TODO: ANDROIDMEM - OpenGL Memory Buffer Version
 #endif
   }
 

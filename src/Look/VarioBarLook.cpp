@@ -27,7 +27,7 @@ Copyright_License {
 static Color
 ColorWithAlpha(const Color &c, uint8_t a)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   return c.WithAlpha(a);
 #else
   return c;

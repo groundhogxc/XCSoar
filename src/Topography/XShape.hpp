@@ -29,7 +29,7 @@ Copyright_License {
 #include "Geo/GeoBounds.hpp"
 #include "shapelib/mapserver.h"
 #include "shapelib/mapshape.h"
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Topography/XShapePoint.hpp"
 #endif
 
@@ -39,7 +39,7 @@ struct GeoPoint;
 
 class XShape {
   static constexpr unsigned MAX_LINES = 32;
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   static constexpr unsigned THINNING_LEVELS = 4;
 #endif
 
@@ -62,7 +62,7 @@ class XShape {
   /**
    * All points of all lines.
    */
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ShapePoint *points;
 
   /**
@@ -83,7 +83,7 @@ class XShape {
    * It is managed by #TopographyFileRenderer.
    */
   mutable unsigned offset;
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
   GeoPoint *points;
 #endif
 
@@ -97,7 +97,7 @@ public:
 
   ~XShape();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   void SetOffset(unsigned _offset) const {
     offset = _offset;
   }
@@ -127,7 +127,7 @@ public:
     return { lines, num_lines };
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const ShapePoint *get_points() const {
 #else
   const GeoPoint *get_points() const {

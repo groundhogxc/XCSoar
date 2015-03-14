@@ -27,7 +27,7 @@ Copyright_License {
 #include "Projection/WindowProjection.hpp"
 #include "Util/Macros.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Texture.hpp"
 #include "Screen/OpenGL/Scope.hpp"
 #include "Screen/OpenGL/VertexPointer.hpp"
@@ -303,7 +303,7 @@ TerrainRenderer::CopyTo(Canvas &canvas, unsigned width, unsigned height) const
                                         width, height);
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 /**
  * Checks if the size difference of any dimension is more than a
  * factor of two.  This is used to check whether the terrain has to be
@@ -324,7 +324,7 @@ void
 TerrainRenderer::Generate(const WindowProjection &map_projection,
                           const Angle sunazimuth)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const GeoBounds &old_bounds = raster_renderer.GetBounds();
   const GeoBounds &new_bounds = map_projection.GetScreenBounds();
   assert(new_bounds.IsValid());
@@ -388,7 +388,7 @@ void
 TerrainRenderer::Draw(Canvas &canvas,
                       const WindowProjection &map_projection) const
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const GeoBounds &bounds = raster_renderer.GetBounds();
   assert(bounds.IsValid());
 

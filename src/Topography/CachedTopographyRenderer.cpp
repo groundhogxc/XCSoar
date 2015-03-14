@@ -23,7 +23,7 @@ Copyright_License {
 
 #include "CachedTopographyRenderer.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 
 void
 CachedTopographyRenderer::Draw(Canvas &canvas,

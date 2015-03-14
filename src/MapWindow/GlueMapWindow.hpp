@@ -66,7 +66,7 @@ class GlueMapWindow : public MapWindow {
 
   const Logger *logger;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /**
    * A timer that triggers a redraw periodically until all data files
    * (terrain, topography, ...) have been loaded / updated.  This is
@@ -107,7 +107,7 @@ class GlueMapWindow : public MapWindow {
    */
   bool skip_idle;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   KineticManager kinetic_x, kinetic_y;
   WindowTimer kinetic_timer;
 #endif
@@ -124,7 +124,7 @@ class GlueMapWindow : public MapWindow {
 
   OffsetHistory offset_history;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /**
    * This mutex protects the attributes that are read by the
    * DrawThread but written by another thread.

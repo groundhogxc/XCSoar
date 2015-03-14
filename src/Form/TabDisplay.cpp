@@ -30,7 +30,7 @@ Copyright_License {
 #include "Screen/Layout.hpp"
 #include "Asset.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Texture.hpp"
 #include "Screen/OpenGL/Scope.hpp"
 
@@ -208,7 +208,7 @@ TabDisplay::PaintButton(Canvas &canvas, unsigned CaptionStyle,
     const int offsetx = (rc.right - rc.left - bitmap_size.cx / 2) / 2;
     const int offsety = (rc.bottom - rc.top - bitmap_size.cy) / 2;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 #ifdef USE_GLSL
     if (inverse)

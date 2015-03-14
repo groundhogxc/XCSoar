@@ -25,7 +25,7 @@
 #include "Look/ThermalAssistantLook.hpp"
 #include "Screen/Canvas.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -33,7 +33,7 @@ ThermalAssistantWindow::ThermalAssistantWindow(const ThermalAssistantLook &_look
                                                unsigned _padding, bool _small,
                                                bool _transparent)
   :renderer(_look, _padding, _small)
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   , transparent(_transparent)
 #endif
 {}
@@ -64,7 +64,7 @@ ThermalAssistantWindow::DrawCircle(Canvas &canvas)
 void
 ThermalAssistantWindow::OnPaintBuffer(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   if (transparent) {
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

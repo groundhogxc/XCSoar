@@ -29,7 +29,7 @@ Copyright_License {
 #include "Screen/Point.hpp"
 #include "Asset.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scissor.hpp"
 #include "Screen/OpenGL/Globals.hpp"
 #elif defined(USE_GDI)
@@ -177,7 +177,7 @@ ListControl::DrawItems(Canvas &canvas, unsigned start, unsigned end) const
   canvas.SetBackgroundTransparent();
   canvas.Select(*look.list.font);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* enable clipping */
   const PixelRect scissor_rc(0, 0, scroll_bar.GetLeft(GetSize()),
                              canvas.GetHeight());

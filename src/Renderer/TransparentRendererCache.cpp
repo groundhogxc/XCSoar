@@ -23,7 +23,7 @@ Copyright_License {
 
 #include "TransparentRendererCache.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Projection/WindowProjection.hpp"
 
 #ifdef USE_GDI

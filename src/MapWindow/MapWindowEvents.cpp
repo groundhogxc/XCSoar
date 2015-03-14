@@ -23,7 +23,7 @@ Copyright_License {
 
 #include "MapWindow.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Screen/WindowCanvas.hpp"
 #endif
 
@@ -34,7 +34,7 @@ MapWindow::OnResize(PixelSize new_size)
 {
   DoubleBufferWindow::OnResize(new_size);
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   ++ui_generation;
 
   // We only grow() the buffer here because resizing it everytime has
@@ -51,7 +51,7 @@ MapWindow::OnCreate()
 {
   DoubleBufferWindow::OnCreate();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   WindowCanvas canvas(*this);
   buffer_canvas.Create(canvas);
 #endif
@@ -70,7 +70,7 @@ MapWindow::OnDestroy()
   SetTerrain(nullptr);
   SetWeather(nullptr);
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   buffer_canvas.Destroy();
 #endif
 
@@ -80,9 +80,9 @@ MapWindow::OnDestroy()
 void
 MapWindow::OnPaint(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   DoubleBufferWindow::OnPaint(canvas);
-#else /* !ENABLE_OPENGL */
+#else /* !RENDER_OPENGL */
   if (buffer_generation == ui_generation)
     DoubleBufferWindow::OnPaint(canvas);
   else if (scale_buffer > 0 && visible_projection.IsValid() &&
@@ -148,5 +148,5 @@ MapWindow::OnPaint(Canvas &canvas)
        started: the buffer has invalid data, paint a white window
        instead */
     canvas.ClearWhite();
-#endif /* !ENABLE_OPENGL */
+#endif /* !RENDER_OPENGL */
 }

@@ -25,7 +25,7 @@ Copyright_License {
 #include "Convert.hpp"
 #include "Util/StringAPI.hpp"
 #include "Util/UTF8.hpp"
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Projection/Projection.hpp"
 #include "Screen/OpenGL/Triangulate.hpp"
 #include "Geo/Math.hpp"
@@ -98,7 +98,7 @@ XShape::XShape(shapefileObj *shpfile, const GeoPoint &file_center, int i,
                int label_field)
   :label(nullptr)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   std::fill_n(index_count, THINNING_LEVELS, nullptr);
   std::fill_n(indices, THINNING_LEVELS, nullptr);
 #endif
@@ -134,13 +134,13 @@ XShape::XShape(shapefileObj *shpfile, const GeoPoint &file_center, int i,
     ++num_lines;
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* OpenGL: convert GeoPoints to ShapePoints, make them relative to
      the map's boundary center */
 
   points = new ShapePoint[num_points];
   ShapePoint *p = points;
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
   /* convert all points of all lines to GeoPoints */
 
   points = new GeoPoint[num_points];
@@ -150,7 +150,7 @@ XShape::XShape(shapefileObj *shpfile, const GeoPoint &file_center, int i,
     const pointObj *src = shape.line[l].point;
     num_points = lines[l];
     for (unsigned j = 0; j < num_points; ++j, ++src) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
       const GeoPoint vertex(Angle::Degrees(src->x), Angle::Degrees(src->y));
       const GeoPoint relative = vertex - file_center;
 
@@ -175,14 +175,14 @@ XShape::~XShape()
 {
   free(label);
   delete[] points;
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   // Note: index_count and indices share one buffer
   for (unsigned i = 0; i < THINNING_LEVELS; i++)
     delete[] index_count[i];
 #endif
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 bool
 XShape::BuildIndices(unsigned thinning_level, ShapeScalar min_distance)
@@ -268,4 +268,4 @@ XShape::get_indices(int thinning_level, ShapeScalar min_distance,
   return indices[thinning_level];
 }
 
-#endif // ENABLE_OPENGL
+#endif // RENDER_OPENGL

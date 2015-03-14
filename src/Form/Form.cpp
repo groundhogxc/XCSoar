@@ -36,7 +36,7 @@ Copyright_License {
 #include "Screen/Custom/Reference.hpp"
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #include "Screen/OpenGL/VertexPointer.hpp"
 #endif
@@ -513,7 +513,7 @@ WndForm::OnPaint(Canvas &canvas)
   const SingleWindow &main_window = GetMainWindow();
   gcc_unused const bool is_active = main_window.IsTopDialog(*this);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   if (!IsDithered() && !IsMaximised() && is_active) {
     /* draw a shade around the current dialog to emphasise it */
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -611,7 +611,7 @@ WndForm::OnPaint(Canvas &canvas)
   }
 
   if (dragging) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     canvas.DrawFilledRectangle(0, 0, canvas.GetWidth(), canvas.GetHeight(),
                                COLOR_YELLOW.WithAlpha(80));

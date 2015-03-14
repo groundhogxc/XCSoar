@@ -29,7 +29,7 @@ Copyright_License {
 #include "Computer/Settings.hpp"
 #include "PageActions.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -143,7 +143,7 @@ SmallTrafficWindow::OnPaint(Canvas &canvas)
   FlarmTrafficWindow::OnPaint(canvas);
 
   if (pressed) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     canvas.DrawFilledRectangle(0, 0, canvas.GetWidth(), canvas.GetHeight(),
                                COLOR_YELLOW.WithAlpha(80));

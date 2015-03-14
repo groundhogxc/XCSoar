@@ -50,7 +50,7 @@ GlueMapWindow::OnDestroy()
   /* stop the TopographyThread */
   SetTopography(nullptr);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   data_timer.Cancel();
 #endif
 
@@ -92,7 +92,7 @@ GlueMapWindow::OnMouseMove(PixelScalar x, PixelScalar y, unsigned keys)
                 - drag_projection.ScreenToGeo(x, y));
     QuickRedraw();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     kinetic_x.MouseMove(x);
     kinetic_y.MouseMove(y);
 #endif
@@ -133,7 +133,7 @@ GlueMapWindow::OnMouseDown(PixelScalar x, PixelScalar y)
 {
   map_item_timer.Cancel();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   kinetic_timer.Cancel();
 #endif
 
@@ -173,7 +173,7 @@ GlueMapWindow::OnMouseDown(PixelScalar x, PixelScalar y)
     drag_mode = DRAG_PAN;
     drag_projection = visible_projection;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     kinetic_x.MouseDown(x);
     kinetic_y.MouseDown(y);
 #endif
@@ -228,13 +228,13 @@ GlueMapWindow::OnMouseUp(PixelScalar x, PixelScalar y)
 #endif
 
   case DRAG_PAN:
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     /* allow the use of the stretched last buffer for the next two
        redraws */
     scale_buffer = 2;
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     kinetic_x.MouseUp(x);
     kinetic_y.MouseUp(y);
     kinetic_timer.Schedule(30);
@@ -289,7 +289,7 @@ GlueMapWindow::OnMouseWheel(PixelScalar x, PixelScalar y, int delta)
 {
   map_item_timer.Cancel();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   kinetic_timer.Cancel();
 #endif
 
@@ -337,7 +337,7 @@ GlueMapWindow::OnKeyDown(unsigned key_code)
 {
   map_item_timer.Cancel();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   kinetic_timer.Cancel();
 #endif
 
@@ -366,7 +366,7 @@ GlueMapWindow::OnCancelMode()
     drag_mode = DRAG_NONE;
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   kinetic_timer.Cancel();
 #endif
 
@@ -388,7 +388,7 @@ GlueMapWindow::OnPaint(Canvas &canvas)
 void
 GlueMapWindow::OnPaintBuffer(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ExchangeBlackboard();
 
   EnterDrawThread();
@@ -407,7 +407,7 @@ GlueMapWindow::OnPaintBuffer(Canvas &canvas)
   if (IsPanning())
     DrawPanInfo(canvas);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   LeaveDrawThread();
 #endif
 }
@@ -423,7 +423,7 @@ GlueMapWindow::OnTimer(WindowTimer &timer)
     }
     ShowMapItems(drag_start_geopoint, false);
     return true;
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   } else if (timer == kinetic_timer) {
     if (kinetic_x.IsSteady() && kinetic_y.IsSteady()) {
       kinetic_timer.Cancel();

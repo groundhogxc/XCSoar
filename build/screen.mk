@@ -43,12 +43,15 @@ ifeq ($(TARGET),ANDROID)
 SCREEN_SOURCES += \
 	$(SCREEN_CUSTOM_SOURCES) \
 	$(SCREEN_SRC_DIR)/OpenGL/EGL.cpp \
-	$(SCREEN_SRC_DIR)/Android/Window.cpp \
-	$(SCREEN_SRC_DIR)/Android/TopWindow.cpp \
-	$(SCREEN_SRC_DIR)/Android/SingleWindow.cpp \
-	$(SCREEN_SRC_DIR)/Android/TopCanvas.cpp \
 	$(SCREEN_SRC_DIR)/Android/Bitmap.cpp \
+	$(SCREEN_SRC_DIR)/Android/TopWindow.cpp \
+	$(SCREEN_SRC_DIR)/Android/Window.cpp \
+	$(SCREEN_SRC_DIR)/Android/SingleWindow.cpp \
+	$(SCREEN_SRC_DIR)/Android/TopCanvas.cpp
+ifeq ($(USE_OPENGL_CANVAS),y)
+SCREEN_SOURCES += \
 	$(SCREEN_SRC_DIR)/Android/Font.cpp
+endif
 endif
 
 ifeq ($(DITHER),y)
@@ -73,29 +76,35 @@ SCREEN_SOURCES += \
 endif
 
 ifeq ($(OPENGL),y)
+
+USE_OPENGL_CANVAS ?= y
+
 SCREEN_SOURCES += \
 	$(SCREEN_SRC_DIR)/Custom/Cache.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/Init.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/Dynamic.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/Rotate.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/Geo.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/Globals.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Extension.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/FBO.cpp \
+	$(SCREEN_SRC_DIR)/OpenGL/Globals.cpp \
+	$(SCREEN_SRC_DIR)/OpenGL/Dynamic.cpp \
+	$(SCREEN_SRC_DIR)/OpenGL/TopCanvas.cpp \
+	$(SCREEN_SRC_DIR)/OpenGL/Surface.cpp \
+	$(SCREEN_SRC_DIR)/OpenGL/Init.cpp
+
+ifeq ($(USE_OPENGL_CANVAS),y)
+	$(SCREEN_SRC_DIR)/OpenGL/Rotate.cpp \
+	$(SCREEN_SRC_DIR)/OpenGL/Geo.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/VertexArray.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Bitmap.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/RawBitmap.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Canvas.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/BufferCanvas.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/TopCanvas.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/SubCanvas.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Texture.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/UncompressedImage.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Buffer.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Shapes.cpp \
-	$(SCREEN_SRC_DIR)/OpenGL/Surface.cpp \
 	$(SCREEN_SRC_DIR)/OpenGL/Triangulate.cpp
-
+endif
+	
 ifeq ($(GLSL),y)
 SCREEN_SOURCES += \
 	$(SCREEN_SRC_DIR)/OpenGL/Shaders.cpp
@@ -266,6 +275,6 @@ ifeq ($(EGL)$(OPENGL),yn)
 $(error EGL requires OpenGL)
 endif
 
-ifeq ($(USE_MEMORY_CANVAS)$(OPENGL),yy)
-$(error MemoryCanvas and OpenGL are mutually exclusive)
+ifeq ($(USE_MEMORY_CANVAS)$(USE_OPENGL_CANVAS),yy)
+$(error MemoryCanvas and OpenGL Canvas are mutually exclusive)
 endif

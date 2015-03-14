@@ -14,7 +14,7 @@
 #include "PortableColor.hpp"
 #include "OS/ByteOrder.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Surface.hpp"
 #include "Screen/OpenGL/Features.hpp"
 #endif
@@ -29,7 +29,7 @@
 
 class Canvas;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 class GLTexture;
 #endif
 
@@ -93,7 +93,7 @@ struct BGRColor
  * This class provides fast drawing methods and offscreen buffer.
  */
 class RawBitmap
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   :private GLSurfaceListener
 #endif
 {
@@ -103,7 +103,7 @@ protected:
   const unsigned corrected_width;
   BGRColor *buffer;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLTexture *texture;
 
   /**
@@ -136,7 +136,7 @@ public:
    */
   RawBitmap(unsigned width, unsigned height);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   virtual
 #endif
   ~RawBitmap();
@@ -173,7 +173,7 @@ public:
   }
 
   void SetDirty() {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     dirty = true;
 #endif
   }
@@ -204,7 +204,7 @@ public:
     return height;
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /**
    * Bind the texture and return a reference to it.  If the texture is
    * "dirty", then the RAM buffer will be copied to the texture by
@@ -216,7 +216,7 @@ public:
   void StretchTo(unsigned width, unsigned height, Canvas &dest_canvas,
                  unsigned dest_width, unsigned dest_height) const;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 private:
   /* from GLSurfaceListener */
   virtual void SurfaceCreated() override;

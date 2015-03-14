@@ -28,7 +28,7 @@ Copyright_License {
 void
 HLine::OnPaint(Canvas &canvas)
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   canvas.Clear(look.background_color);
 #endif
 

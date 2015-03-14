@@ -29,12 +29,12 @@ Copyright_License {
 struct PixelSize;
 class Font;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 class GLTexture;
 #endif
 
 namespace TextCache {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   typedef GLTexture *Result;
 #else
   struct Result {

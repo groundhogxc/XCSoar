@@ -29,7 +29,7 @@ Copyright_License {
 #include "Math/fixed.hpp"
 #include "Util/NonCopyable.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Geo/GeoBounds.hpp"
 #endif
 
@@ -45,7 +45,7 @@ class RasterRenderer : private NonCopyable {
   /** screen dimensions in coarse pixels */
   unsigned quantisation_pixels;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /**
    * The value of #quantisation_pixels that was used in the last
    * ScanMap() call.
@@ -59,7 +59,7 @@ class RasterRenderer : private NonCopyable {
    */
   unsigned quantisation_effective;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /**
    * The area that was rendered previously into the #HeightMatrix and
    * the #RawBitmap.  This attribute is used to decide whether the
@@ -93,7 +93,7 @@ public:
     return height_matrix.GetHeight();
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   void Invalidate() {
     bounds.SetInvalid();
   }

@@ -27,7 +27,7 @@ Copyright_License {
 #include "Projection/MapWindowProjection.hpp"
 #include "Renderer/AirspaceRenderer.hpp"
 #include "Screen/DoubleBufferWindow.hpp"
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Screen/BufferCanvas.hpp"
 #endif
 #include "Renderer/LabelBlock.hpp"
@@ -63,7 +63,7 @@ class MapWindow :
   public DoubleBufferWindow,
   public MapWindowBlackboard
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   // graphics vars
 
   BufferCanvas buffer_canvas;
@@ -97,7 +97,7 @@ protected:
    */
   MapWindowProjection visible_projection;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /**
    * The projection of the buffer.  This differs from
    * visible_projection only after the projection was modified, until
@@ -148,7 +148,7 @@ protected:
 
   bool compass_visible;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /**
    * Tracks whether the buffer canvas contains valid data.  We use
    * those attributes to prevent showing invalid data on the map, when

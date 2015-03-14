@@ -120,7 +120,7 @@ void
 BackgroundRenderer::SetShadingAngle(const WindowProjection& projection,
                                     Angle angle)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* on OpenGL, the texture is rotated to apply the screen angle */
   shading_angle = angle;
 #else

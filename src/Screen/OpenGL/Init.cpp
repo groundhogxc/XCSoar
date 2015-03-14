@@ -302,7 +302,9 @@ OpenGL::SetupContext()
   glEnableClientState(GL_VERTEX_ARRAY);
 #endif
 
+#ifdef RENDER_OPENGL
   InitShapes();
+#endif
 
 #ifdef USE_GLSL
   InitShaders();
@@ -423,7 +425,9 @@ OpenGL::Deinitialise()
   DeinitShaders();
 #endif
 
+#ifdef RENDER_OPENGL
   DeinitShapes();
+#endif
 
   TextCache::Flush();
 }

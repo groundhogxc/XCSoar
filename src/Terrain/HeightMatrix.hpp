@@ -30,7 +30,7 @@ Copyright_License {
 
 class RasterMap;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 class GeoBounds;
 #else
 class WindowProjection;
@@ -49,7 +49,7 @@ protected:
   void SetSize(unsigned width, unsigned height, unsigned quantisation_pixels);
 
 public:
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /**
    * Copy values from the #RasterMap to the buffer, north-up only.
    */

@@ -74,7 +74,7 @@ MapWindow::RenderAirspace(Canvas &canvas)
 {
   if (GetMapSettings().airspace.enable)
     airspace_renderer.Draw(canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                            buffer_canvas,
 #endif
                            render_projection,

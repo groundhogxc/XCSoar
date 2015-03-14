@@ -35,13 +35,13 @@ GlueMapWindow::GlueMapWindow(const Look &look)
   :MapWindow(look.map, look.traffic),
    topography_thread(nullptr),
    logger(nullptr),
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
    data_timer(*this),
 #endif
    drag_mode(DRAG_NONE),
    ignore_single_click(false),
    skip_idle(true),
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
    kinetic_x(700),
    kinetic_y(700),
    kinetic_timer(*this),
@@ -93,7 +93,7 @@ GlueMapWindow::SetMapSettings(const MapSettings &new_value)
 {
   AssertThreadOrUndefined();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ReadMapSettings(new_value);
 #else
   ScopeLock protect(next_mutex);
@@ -106,7 +106,7 @@ GlueMapWindow::SetComputerSettings(const ComputerSettings &new_value)
 {
   AssertThreadOrUndefined();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ReadComputerSettings(new_value);
 #else
   ScopeLock protect(next_mutex);
@@ -119,7 +119,7 @@ GlueMapWindow::SetUIState(const UIState &new_value)
 {
   AssertThreadOrUndefined();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ReadUIState(new_value);
 #else
   ScopeLock protect(next_mutex);
@@ -136,7 +136,7 @@ GlueMapWindow::ExchangeBlackboard()
   ReadBlackboard(device_blackboard->Basic(), device_blackboard->Calculated());
   device_blackboard->mutex.Unlock();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   next_mutex.Lock();
   ReadMapSettings(next_settings_map);
   ReadComputerSettings(next_settings_computer);
@@ -148,7 +148,7 @@ GlueMapWindow::ExchangeBlackboard()
 void
 GlueMapWindow::SuspendThreads()
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   if (draw_thread != nullptr)
     draw_thread->Suspend();
 #endif
@@ -157,7 +157,7 @@ GlueMapWindow::SuspendThreads()
 void
 GlueMapWindow::ResumeThreads()
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   if (draw_thread != nullptr)
     draw_thread->Resume();
 #endif
@@ -172,7 +172,7 @@ GlueMapWindow::FullRedraw()
   UpdateMapScale();
   UpdateScreenBounds();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   Invalidate();
 #else
   draw_thread->TriggerRedraw();
@@ -187,7 +187,7 @@ GlueMapWindow::QuickRedraw()
   UpdateMapScale();
   UpdateScreenBounds();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /* update the Projection */
 
   ++ui_generation;
@@ -199,7 +199,7 @@ GlueMapWindow::QuickRedraw()
 
   Invalidate();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /* we suppose that the operation will need a full redraw later, so
      trigger that now */
   draw_thread->TriggerRedraw();
@@ -240,7 +240,7 @@ GlueMapWindow::Idle()
   do {
     still_dirty = UpdateWeather() || UpdateTerrain();
   } while (!clock.Check(700) && /* stop after 700ms */
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
            !draw_thread->IsTriggered() &&
 #endif
            IsUserIdle(2500) &&
@@ -254,7 +254,7 @@ GlueMapWindow::OnUser(unsigned id)
 {
   switch (Command(id)) {
   case Command::INVALIDATE:
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     Invalidate();
 #else
     draw_thread->TriggerRedraw();

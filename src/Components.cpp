@@ -38,7 +38,7 @@ TopographyStore *topography;
 RasterTerrain *terrain;
 RasterWeatherStore *rasp;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 DrawThread *draw_thread;
 #endif
 
@@ -78,15 +78,15 @@ GetAirspaceWarnings()
 
 #ifndef NDEBUG
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 static const ThreadHandle zero_thread_handle = ThreadHandle();
 static ThreadHandle draw_thread_handle;
 
 bool
 InDrawThread()
-{
-#ifdef ENABLE_OPENGL
+{ // TODO: I found an ifdef OPENGL inside an ifdef OPENGL here
+#ifdef RENDER_OPENGL
   return InMainThread() && draw_thread_handle.IsInside();
 #else
   return draw_thread != NULL && draw_thread->IsInside();

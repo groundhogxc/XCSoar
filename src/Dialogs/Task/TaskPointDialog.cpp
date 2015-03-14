@@ -60,7 +60,7 @@ Copyright_License {
 #include "Widgets/LineSectorZoneEditWidget.hpp"
 #include "Widgets/KeyholeZoneEditWidget.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scissor.hpp"
 #endif
 
@@ -471,7 +471,7 @@ TaskPointWidget::PaintMap(Canvas &canvas, const PixelRect &rc)
 {
   const OrderedTaskPoint &tp = ordered_task.GetPoint(active_index);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* enable clipping */
   GLCanvasScissor scissor(canvas);
 #endif

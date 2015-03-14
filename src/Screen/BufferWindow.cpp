@@ -66,7 +66,7 @@ BufferWindow::OnResize(PixelSize new_size)
 void
 BufferWindow::OnPaint(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   if (!buffer.IsDefined()) {
     buffer.Create(canvas.GetSize());
     dirty = true;

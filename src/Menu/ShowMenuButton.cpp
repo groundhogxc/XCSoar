@@ -29,7 +29,7 @@ Copyright_License {
 #include "Input/InputEvents.hpp"
 #include "Util/Macros.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -80,7 +80,7 @@ ShowMenuButtonRenderer::DrawButton(Canvas &canvas, const PixelRect &rc,
   canvas.DrawPolyline(m, ARRAY_SIZE(m));
 
   if (pressed) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     canvas.DrawFilledRectangle(rc, COLOR_YELLOW.WithAlpha(80));
 #else

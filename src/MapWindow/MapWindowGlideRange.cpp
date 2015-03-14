@@ -26,7 +26,7 @@ Copyright_License {
 #include "Geo/GeoClip.hpp"
 #include "Task/ProtectedRoutePlanner.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #include "Screen/OpenGL/VertexPointer.hpp"
 #include "Screen/OpenGL/Triangulate.hpp"
@@ -50,7 +50,7 @@ struct ProjectedFan {
   ProjectedFan(unsigned n):size(n) {
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   void DrawFill(const RasterPoint *points, unsigned start) const {
     /* triangulate the polygon */
     AllocatedArray<GLushort> triangle_buffer;
@@ -143,7 +143,7 @@ struct ProjectedFans {
   void DrawFill(Canvas &canvas) const {
     assert(remaining == 0);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     unsigned start = 0;
     const RasterPoint *points = &this->points[0];
     for (auto i = fans.begin(), end = fans.end(); i != end; ++i) {
@@ -162,7 +162,7 @@ struct ProjectedFans {
   void DrawOutline(Canvas &canvas) const {
     assert(remaining == 0);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     unsigned start = 0;
     for (auto i = fans.begin(), end = fans.end(); i != end; ++i) {
       i->DrawOutline(start);
@@ -279,7 +279,7 @@ MapWindow::DrawTerrainAbove(Canvas &canvas)
   if (GetComputerSettings().features.final_glide_terrain == FeaturesSettings::FinalGlideTerrain::SHADE &&
       IsNearSelf()) {
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
     const ScopeVertexPointer vp(&visitor.fans.points[0]);
 
@@ -348,7 +348,7 @@ MapWindow::DrawTerrainAbove(Canvas &canvas)
   if (visitor.fans.size() == 1) {
     /* only one fan: we can draw a simple polygon */
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const ScopeVertexPointer vp(&visitor.fans.points[0]);
     look.reach_pen.Bind();
 #else
@@ -365,14 +365,14 @@ MapWindow::DrawTerrainAbove(Canvas &canvas)
 
     visitor.fans.DrawOutline(canvas);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     look.reach_pen.Unbind();
 #endif
   } else {
     /* more than one fan (turning reach enabled): we have to use a
        stencil to draw the outline, because the fans may overlap */
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const ScopeVertexPointer vp(&visitor.fans.points[0]);
 
   glEnable(GL_STENCIL_TEST);

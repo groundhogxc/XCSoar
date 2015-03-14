@@ -21,7 +21,7 @@ Copyright_License {
 }
 */
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 
 #include "StencilMapCanvas.hpp"
 #include "Screen/Canvas.hpp"
@@ -127,4 +127,4 @@ StencilMapCanvas::ClearBuffer()
     stencil.ClearWhite();
 }
 
-#endif // !ENABLE_OPENGL
+#endif // !RENDER_OPENGL

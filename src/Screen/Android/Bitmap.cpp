@@ -22,14 +22,18 @@ Copyright_License {
 */
 
 #include "Screen/Bitmap.hpp"
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Texture.hpp"
 #include "Screen/OpenGL/Surface.hpp"
+#endif
 #include "Android/NativeView.hpp"
 #include "Android/Main.hpp"
 #include "android_drawable.h"
 
 Bitmap::Bitmap(ResourceId id)
+#ifdef RENDER_OPENGL
   :texture(nullptr), interpolation(false)
+#endif
 {
   Load(id);
 }
@@ -44,6 +48,7 @@ find_resource_name(unsigned id)
   return nullptr;
 }
 
+#ifdef RENDER_OPENGL
 gcc_malloc
 static GLTexture *
 LoadResourceTexture(ResourceId id, Bitmap::Type type)
@@ -70,10 +75,12 @@ LoadFileTexture(const TCHAR *path)
 
   return new GLTexture(result[0], result[1], result[2], result[3], result[4]);
 }
+#endif
 
 bool
 Bitmap::Reload()
 {
+#ifdef RENDER_OPENGL
   assert(id.IsDefined() || !pathName.empty());
   assert(texture == nullptr);
 
@@ -85,6 +92,9 @@ Bitmap::Reload()
 
   size.cx = texture->GetWidth();
   size.cy = texture->GetHeight();
+#endif
+  // TODO ANDROIDMEM: implement texture reload from Memory Bitmap
+
   return true;
 }
 
@@ -94,6 +104,7 @@ Bitmap::Load(ResourceId _id, Type _type)
   assert(_id.IsDefined());
 
   Reset();
+#ifdef RENDER_OPENGL
 
   id = _id;
   type = _type;
@@ -101,6 +112,8 @@ Bitmap::Load(ResourceId _id, Type _type)
 
   if (!surface_valid)
     return true;
+#endif
+  // TODO ANDROIDMEM: implement texture reload from Memory Bitmap
 
   return Reload();
 }
@@ -121,15 +134,19 @@ Bitmap::LoadFile(const TCHAR *path)
 
   Reset();
 
+#ifdef RENDER_OPENGL
   pathName = path;
   AddSurfaceListener(*this);
 
   if (!surface_valid)
     return true;
 
+#endif
+  // TODO ANDROIDMEM: implement texture reload from Memory Bitmap
   return Reload();
 }
 
+#ifdef RENDER_OPENGL
 void
 Bitmap::Reset()
 {
@@ -142,6 +159,8 @@ Bitmap::Reset()
   delete texture;
   texture = nullptr;
 }
+#endif
+  // TODO ANDROIDMEM: implement texture reload from Memory Bitmap
 
 void
 Bitmap::SurfaceCreated()
@@ -152,6 +171,9 @@ Bitmap::SurfaceCreated()
 void
 Bitmap::SurfaceDestroyed()
 {
+#ifdef RENDER_OPENGL
   delete texture;
   texture = nullptr;
+#endif
+  // TODO ANDROIDMEM: implement texture reload from Memory Bitmap
 }

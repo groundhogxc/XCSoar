@@ -27,7 +27,7 @@ Copyright_License {
 #include "Screen/Point.hpp"
 #include "Compiler.h"
 
-#if defined(USE_GDI) || defined(ENABLE_OPENGL)
+#if defined(USE_GDI) || defined(RENDER_OPENGL)
 #include "Screen/Bitmap.hpp"
 #else
 #include "Screen/Memory/Buffer.hpp"
@@ -39,7 +39,7 @@ class Canvas;
 class Color;
 
 class UnitSymbol {
-#if defined(USE_GDI) || defined(ENABLE_OPENGL)
+#if defined(USE_GDI) || defined(RENDER_OPENGL)
   Bitmap bitmap;
   PixelSize size;
 #else
@@ -60,7 +60,7 @@ public:
   void Load(ResourceId id);
 
   void Reset() {
-#if defined(USE_GDI) || defined(ENABLE_OPENGL)
+#if defined(USE_GDI) || defined(RENDER_OPENGL)
     bitmap.Reset();
 #else
     buffer.Free();
@@ -69,7 +69,7 @@ public:
 
   gcc_pure
   bool IsDefined() const {
-#if defined(USE_GDI) || defined(ENABLE_OPENGL)
+#if defined(USE_GDI) || defined(RENDER_OPENGL)
     return bitmap.IsDefined();
 #else
     return buffer.data != nullptr;
@@ -77,7 +77,7 @@ public:
   }
 
   const PixelSize GetSize() const {
-#if defined(USE_GDI) || defined(ENABLE_OPENGL)
+#if defined(USE_GDI) || defined(RENDER_OPENGL)
     return size;
 #else
     return { buffer.width, buffer.height };

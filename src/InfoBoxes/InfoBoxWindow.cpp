@@ -35,7 +35,7 @@ Copyright_License {
 #include "Screen/Key.h"
 #include "Dialogs/dlgInfoBoxAccess.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/SubCanvas.hpp"
 #endif
 
@@ -294,7 +294,7 @@ void
 InfoBoxWindow::PaintInto(Canvas &dest, PixelScalar xoff, PixelScalar yoff,
                          UPixelScalar width, UPixelScalar height)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   SubCanvas canvas(dest, RasterPoint(xoff, yoff), PixelSize(width, height));
   Paint(canvas);
 #else
@@ -330,7 +330,7 @@ InfoBoxWindow::UpdateContent()
        enabled */
     Invalidate();
   else {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     if (!data.CompareTitle(old) || !data.CompareValue(old) ||
         !data.CompareComment(old))
       Invalidate();

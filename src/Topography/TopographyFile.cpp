@@ -215,7 +215,7 @@ TopographyFile::GetSkipSteps(fixed map_scale) const
   return 1;
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 unsigned
 TopographyFile::GetThinningLevel(fixed map_scale) const

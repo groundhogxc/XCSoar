@@ -32,7 +32,7 @@
 #include "Language/Language.hpp"
 #include "Look/ThermalAssistantLook.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -166,7 +166,7 @@ void
 ThermalAssistantRenderer::PaintPoints(Canvas &canvas,
                                     const LiftPoints &lift_points) const
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #elif defined(USE_GDI)
   canvas.SetMixMask();

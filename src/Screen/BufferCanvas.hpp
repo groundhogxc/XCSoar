@@ -24,7 +24,7 @@ Copyright_License {
 #ifndef XCSOAR_SCREEN_BUFFER_CANVAS_HPP
 #define XCSOAR_SCREEN_BUFFER_CANVAS_HPP
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "OpenGL/BufferCanvas.hpp"
 #elif defined(USE_MEMORY_CANVAS)
 #include "Screen/VirtualCanvas.hpp"

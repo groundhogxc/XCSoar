@@ -275,7 +275,7 @@ TopographyStore::Load(OperationEnvironment &operation, NLineReader &reader,
       // Ignore a totally transparent file!
       if (alpha == 0)
         continue;
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
       // Without OpenGL ignore anything but 100% opaque
       if (alpha != 255)
         continue;
@@ -286,7 +286,7 @@ TopographyStore::Load(OperationEnvironment &operation, NLineReader &reader,
     TopographyFile *file = new TopographyFile(zdir, shape_filename,
                                               shape_range, label_range,
                                               labelImportantRange,
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
                                               Color(red, green, blue, alpha),
 #else
                                               Color(red, green, blue),

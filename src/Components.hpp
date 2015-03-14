@@ -58,7 +58,7 @@ extern TopographyStore *topography;
 extern RasterTerrain *terrain;
 extern RasterWeatherStore *rasp;
 extern GlideComputer *glide_computer;
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 extern DrawThread *draw_thread;
 #endif
 extern MultipleDevices *devices;

@@ -25,7 +25,7 @@ Copyright_License {
 #include "Renderer/FAITriangleAreaRenderer.hpp"
 #include "Look/MapLook.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Screen/BufferCanvas.hpp"
 #else
 #include "Screen/OpenGL/Scope.hpp"
@@ -52,8 +52,8 @@ MapWindow::DrawContest(Canvas &canvas)
 
     /* draw FAI triangle areas */
     static constexpr Color fill_color = COLOR_YELLOW;
-#if defined(ENABLE_OPENGL) || defined(USE_MEMORY_CANVAS)
-#ifdef ENABLE_OPENGL
+#if defined(RENDER_OPENGL) || defined(USE_MEMORY_CANVAS)
+#ifdef RENDER_OPENGL
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
     canvas.Select(Brush(fill_color.WithAlpha(60)));

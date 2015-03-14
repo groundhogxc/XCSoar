@@ -33,7 +33,7 @@ Copyright_License {
 class CachedTopographyRenderer {
   TopographyRenderer renderer;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   TransparentRendererCache cache;
 
   unsigned last_serial;
@@ -43,18 +43,18 @@ public:
   CachedTopographyRenderer(const TopographyStore &store,
                            const TopographyLook &look)
     :renderer(store, look)
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     , last_serial(0)
 #endif
   {}
 
   void Flush() {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     cache.Invalidate();
 #endif
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   void Draw(Canvas &canvas, const WindowProjection &projection) {
     renderer.Draw(canvas, projection);
   }

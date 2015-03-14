@@ -25,6 +25,7 @@ Copyright_License {
 #include "Topography/TopographyFile.hpp"
 #include "Topography/XShape.hpp"
 #include "Look/TopographyLook.hpp"
+#include "Look/GlobalFonts.hpp"
 #include "Renderer/LabelBlock.hpp"
 #include "Projection/WindowProjection.hpp"
 #include "Screen/Canvas.hpp"
@@ -36,7 +37,7 @@ Copyright_License {
 #include "Geo/GeoClip.hpp"
 #include "Geo/Constants.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/VertexPointer.hpp"
 #include "Screen/OpenGL/FallbackBuffer.hpp"
 #include "Screen/OpenGL/Dynamic.hpp"
@@ -58,7 +59,7 @@ TopographyFileRenderer::TopographyFileRenderer(const TopographyFile &_file,
                                                const TopographyLook &_look)
   :file(_file), look(_look),
    pen(file.GetPenWidth(), file.GetColor()),
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
    array_buffer(nullptr)
 #else
    brush(file.GetColor())
@@ -68,14 +69,14 @@ TopographyFileRenderer::TopographyFileRenderer(const TopographyFile &_file,
   if (icon_ID.IsDefined())
     icon.LoadResource(icon_ID, file.GetBigIcon());
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   AddSurfaceListener(*this);
 #endif
 }
 
 TopographyFileRenderer::~TopographyFileRenderer()
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   RemoveSurfaceListener(*this);
 
   delete array_buffer;
@@ -108,7 +109,7 @@ TopographyFileRenderer::UpdateVisibleShapes(const WindowProjection &projection)
   }
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 inline void
 TopographyFileRenderer::UpdateArrayBuffer()
@@ -217,7 +218,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
   OpenGL::solid_shader->Use();
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   UpdateArrayBuffer();
   const ShapePoint *const buffer = (const ShapePoint *)
     array_buffer->BeginRead();
@@ -234,7 +235,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
 
   // get drawing info
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const unsigned level = file.GetThinningLevel(map_scale);
   const ShapeScalar min_distance =
     ShapeScalar(file.GetMinimumPointDistance(level))
@@ -254,14 +255,14 @@ TopographyFileRenderer::Paint(Canvas &canvas,
   glPushMatrix();
   ApplyProjection(projection, file.GetCenter());
 #endif /* !USE_GLSL */
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
   const GeoClip clip(projection.GetScreenBounds().Scale(fixed(1.1)));
   AllocatedArray<GeoPoint> geo_points;
 
   int iskip = file.GetSkipSteps(map_scale);
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ScopeVertexPointer vp;
 
 #ifdef GL_EXT_multi_draw_arrays
@@ -274,9 +275,9 @@ TopographyFileRenderer::Paint(Canvas &canvas,
     const XShape &shape = *shape_p;
 
     const auto lines = shape.GetLines();
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const ShapePoint *points = buffer + shape.GetOffset();
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
     const GeoPoint *points = shape.get_points();
 #endif
 
@@ -285,7 +286,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
       break;
 
     case MS_SHAPE_POINT:
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #ifdef USE_GLSL
       /* disable the ScopeVertexPointer instance because PaintPoint()
          uses that attribute */
@@ -299,14 +300,14 @@ TopographyFileRenderer::Paint(Canvas &canvas,
          left it disabled */
       glEnableVertexAttribArray(OpenGL::Attribute::POSITION);
 #endif
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
       PaintPoint(canvas, projection, lines.begin(), lines.end(), points);
 #endif
       break;
 
     case MS_SHAPE_LINE:
       {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
         vp.Update(GL_FLOAT, points);
 
         const GLushort *indices, *count;
@@ -323,7 +324,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
             indices += n;
           }
         }
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
         for (unsigned msize : lines) {
         shape_renderer.Begin(msize);
 
@@ -341,7 +342,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
       break;
 
     case MS_SHAPE_POLYGON:
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
       {
         const GLushort *index_count;
         const GLushort *triangles = shape.get_indices(level, min_distance,
@@ -366,7 +367,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
         glDrawElements(GL_TRIANGLE_STRIP, n, GL_UNSIGNED_SHORT,
                        triangles);
       }
-#else // !ENABLE_OPENGL
+#else // !RENDER_OPENGL
       {
         const GeoPoint *src = &points[0];
         for (const unsigned n : lines) {
@@ -401,7 +402,7 @@ TopographyFileRenderer::Paint(Canvas &canvas,
       break;
     }
   }
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 #ifdef GL_EXT_multi_draw_arrays
   if (!polygon_indices.empty()) {
@@ -481,7 +482,7 @@ TopographyFileRenderer::PaintLabels(Canvas &canvas,
     assert(label != nullptr);
 
     const auto lines = shape.GetLines();
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const ShapePoint *points = shape.get_points();
 #else
     const GeoPoint *points = shape.get_points();
@@ -491,13 +492,13 @@ TopographyFileRenderer::PaintLabels(Canvas &canvas,
       int minx = canvas.GetWidth();
       int miny = canvas.GetHeight();
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
       const ShapePoint *end = points + n;
 #else
       const GeoPoint *end = points + n;
 #endif
       for (; points < end; points += iskip) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
         RasterPoint pt = projection.GeoToScreen(file.ToGeoPoint(*points));
 #else
         RasterPoint pt = projection.GeoToScreen(*points);
@@ -532,7 +533,7 @@ TopographyFileRenderer::PaintLabels(Canvas &canvas,
   }
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 void
 TopographyFileRenderer::SurfaceCreated()

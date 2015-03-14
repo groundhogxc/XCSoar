@@ -100,7 +100,9 @@ Copyright_License {
 #ifdef ENABLE_OPENGL
 #include "Screen/OpenGL/Globals.hpp"
 #include "Screen/OpenGL/Dynamic.hpp"
-#else
+#endif
+
+#ifndef RENDER_OPENGL
 #include "DrawThread.hpp"
 #endif
 
@@ -432,7 +434,7 @@ Startup()
   // Finally ready to go.. all structures must be present before this.
 
   // Create the drawing thread
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   draw_thread = new DrawThread(*map_window);
   draw_thread->Start(true);
 #endif
@@ -551,7 +553,7 @@ Shutdown()
 #ifdef HAVE_DOWNLOAD_MANAGER
   Net::DownloadManager::BeginDeinitialise();
 #endif
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   if (draw_thread != nullptr)
     draw_thread->BeginStop();
 #endif
@@ -578,7 +580,7 @@ Shutdown()
   }
 
   //  Wait for the drawing thread to finish
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   LogFormat("Waiting for draw thread");
 
   if (draw_thread != nullptr) {

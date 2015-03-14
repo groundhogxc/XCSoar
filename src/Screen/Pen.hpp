@@ -172,7 +172,7 @@ public:
   }
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 private:
   void BindStyle() const {
 #if defined(HAVE_GLES) && !defined(HAVE_GLES2)

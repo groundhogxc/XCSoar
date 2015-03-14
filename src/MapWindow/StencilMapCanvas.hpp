@@ -24,7 +24,7 @@ Copyright_License {
 #ifndef MAP_DRAW_HELPER_HPP
 #define MAP_DRAW_HELPER_HPP
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 
 #include "Geo/GeoClip.hpp"
 #include "Util/AllocatedArray.hpp"
@@ -82,6 +82,6 @@ protected:
   void ClearBuffer();
 };
 
-#endif // !ENABLE_OPENGL
+#endif // !RENDER_OPENGL
 
 #endif

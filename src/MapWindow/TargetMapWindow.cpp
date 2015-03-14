@@ -35,7 +35,7 @@ Copyright_License {
 #include "Engine/Task/ObservationZones/ObservationZonePoint.hpp"
 #include "Engine/Task/ObservationZones/CylinderZone.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scissor.hpp"
 #else
 #include "Screen/WindowCanvas.hpp"
@@ -128,7 +128,7 @@ TargetMapWindow::RenderAirspace(Canvas &canvas)
 {
   if (GetMapSettings().airspace.enable)
     airspace_renderer.Draw(canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                            buffer_canvas,
 #endif
                            projection,
@@ -191,7 +191,7 @@ TargetMapWindow::RenderTrail(Canvas &canvas)
 void
 TargetMapWindow::OnPaintBuffer(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* enable clipping */
   GLCanvasScissor scissor(canvas);
 #endif
@@ -209,7 +209,7 @@ TargetMapWindow::OnPaintBuffer(Canvas &canvas)
   // Render airspace
   RenderAirspace(canvas);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* desaturate the map background, to focus on the task */
   canvas.FadeToWhite(0x80);
 #endif
@@ -324,7 +324,7 @@ TargetMapWindow::OnResize(PixelSize new_size)
 {
   BufferWindow::OnResize(new_size);
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   buffer_canvas.Grow(new_size);
 #endif
 
@@ -340,7 +340,7 @@ TargetMapWindow::OnCreate()
 
   drag_mode = DRAG_NONE;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   WindowCanvas canvas(*this);
   buffer_canvas.Create(canvas);
 #endif
@@ -354,7 +354,7 @@ TargetMapWindow::OnDestroy()
   SetAirspaces(nullptr);
   SetWaypoints(nullptr);
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   buffer_canvas.Destroy();
 #endif
 

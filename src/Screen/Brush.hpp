@@ -122,7 +122,7 @@ public:
   }
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /**
    * Configures this brush in the OpenGL context.
    */

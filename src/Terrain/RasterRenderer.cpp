@@ -92,7 +92,7 @@ ContourInterval(const int h, const unsigned contour_height_scale)
 
 RasterRenderer::RasterRenderer()
   :quantisation_pixels(2),
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
    last_quantisation_pixels(-1),
    bounds(GeoBounds::Invalid()),
 #endif
@@ -112,7 +112,7 @@ RasterRenderer::~RasterRenderer()
   delete[] contour_column_base;
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 gcc_pure
 static unsigned
@@ -176,7 +176,7 @@ RasterRenderer::ScanMap(const RasterMap &map, const WindowProjection &projection
     /* disable slope shading when zoomed out very far (too tiny) */
     quantisation_effective = 0;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   bounds = projection.GetScreenBounds().Scale(fixed(1.5));
   height_matrix.Fill(map, bounds,
                      projection.GetScreenWidth() / quantisation_pixels,

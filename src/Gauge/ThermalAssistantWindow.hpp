@@ -33,7 +33,7 @@ class ThermalAssistantWindow : public AntiFlickerWindow
 {
   ThermalAssistantRenderer renderer;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const bool transparent;
 #endif
 

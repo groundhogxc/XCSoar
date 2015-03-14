@@ -27,7 +27,7 @@ Copyright_License {
 #include "Util/StaticArray.hpp"
 #include "Geo/GeoPoint.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "TransparentRendererCache.hpp"
 #endif
 
@@ -52,7 +52,7 @@ class AirspaceRenderer
 
   StaticArray<GeoPoint,32> intersections;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /**
    * This object caches the airspace fill.  This avoids drawing it
    * again and again each frame when nothing has changed.
@@ -65,7 +65,7 @@ class AirspaceRenderer
 public:
   AirspaceRenderer(const AirspaceLook &_look)
     :look(_look), airspaces(nullptr), warning_manager(nullptr)
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     , last_warning_serial(0)
 #endif
   {}
@@ -96,13 +96,13 @@ public:
   }
 
   void Flush() {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     fill_cache.Invalidate();
 #endif
   }
 
 private:
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   bool DrawFill(Canvas &buffer_canvas, Canvas &stencil_canvas,
                 const WindowProjection &projection,
                 const AirspaceRendererSettings &settings,
@@ -123,7 +123,7 @@ private:
 #endif
 
   void DrawInternal(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                     Canvas &stencil_canvas,
 #endif
                     const WindowProjection &projection,
@@ -136,7 +136,7 @@ public:
    * Draw airspaces selected by the given #AirspacePredicate.
    */
   void Draw(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
             Canvas &stencil_canvas,
 #endif
             const WindowProjection &projection,
@@ -148,7 +148,7 @@ public:
    * Draw all airspaces.
    */
   void Draw(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
             Canvas &stencil_canvas,
 #endif
             const WindowProjection &projection,
@@ -158,7 +158,7 @@ public:
    * Draw airspaces that are visible according to standard rules.
    */
   void Draw(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
             Canvas &stencil_canvas,
 #endif
             const WindowProjection &projection,

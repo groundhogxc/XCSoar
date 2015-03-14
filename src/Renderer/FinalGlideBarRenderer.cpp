@@ -30,7 +30,7 @@ Copyright_License {
 #include "Look/TaskLook.hpp"
 #include "Formatter/UserUnits.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -40,7 +40,7 @@ FinalGlideBarRenderer::Draw(Canvas &canvas, const PixelRect &rc,
                             const GlideSettings &glide_settings,
                             const bool final_glide_bar_mc0_enabled) const
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
 

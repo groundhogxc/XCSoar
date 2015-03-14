@@ -28,7 +28,7 @@ Copyright_License {
 #include "Math/Angle.hpp"
 #include "Util/Macros.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/CanvasRotateShift.hpp"
 #else
 #include "Math/Screen.hpp"
@@ -39,7 +39,7 @@ Copyright_License {
 #include <assert.h>
 
 class RotatedPolygonRenderer {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const RasterPoint *points;
   CanvasRotateShift rotate_shift;
 #else
@@ -50,11 +50,11 @@ public:
   RotatedPolygonRenderer(const RasterPoint *src, unsigned n,
                          const RasterPoint pos, const Angle angle,
                          const unsigned scale=100)
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     :points(src), rotate_shift(pos, angle, scale)
 #endif
   {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     assert(n <= ARRAY_SIZE(points));
 
     std::copy_n(src, n, points);
@@ -63,7 +63,7 @@ public:
   }
 
   void Draw(Canvas &canvas, unsigned start, unsigned n) const {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     assert(start + n <= ARRAY_SIZE(points));
 #endif
 

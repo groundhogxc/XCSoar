@@ -34,14 +34,14 @@ ThermalAssistantLook::Initialise(bool small, bool inverse)
   polygon_fill_color = Color(0xCC, 0xCC, 0xFF);
   polygon_border_color = Color(0x00, 0x00, 0xFF);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   polygon_brush.Set(polygon_fill_color.WithAlpha(128));
 #else /* !OPENGL */
   polygon_brush.Set(polygon_fill_color);
 #endif /* !OPENGL */
 
   UPixelScalar width = Layout::FastScale(small ? 1 : 2);
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   polygon_pen.Set(width, polygon_border_color.WithAlpha(128));
 #else /* !OPENGL */
   polygon_pen.Set(width, polygon_border_color);

@@ -26,7 +26,7 @@ Copyright_License {
 
 #include "Screen/Canvas.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/Point.hpp"
 #endif
 
@@ -35,14 +35,14 @@ Copyright_License {
  * #Canvas.
  */
 class SubCanvas : public Canvas {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   RasterPoint relative;
 #endif
 
 public:
   SubCanvas(Canvas &canvas, RasterPoint _offset, PixelSize _size);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ~SubCanvas();
 #endif
 };

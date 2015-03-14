@@ -115,7 +115,9 @@ TopWindow::OnPause()
     return;
 
   TextCache::Flush();
+#ifdef RENDER_OPENGL
   OpenGL::DeinitShapes();
+#endif
 
   SurfaceDestroyed();
 

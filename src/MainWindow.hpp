@@ -130,7 +130,7 @@ private:
   PixelRect map_rect;
   bool FullScreen;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /**
    * This variable tracks whether the #DrawThread was suspended
    * because the map was replaced by a #Widget.

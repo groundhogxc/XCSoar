@@ -43,7 +43,7 @@ OZRenderer::Prepare(Canvas &canvas, Layer layer, int offset) const
 {
   if (layer == LAYER_SHADE) {
     Color color = airspace_look.classes[AATASK].fill_color;
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -79,7 +79,7 @@ void
 OZRenderer::Finish(Canvas &canvas, Layer layer) const
 {
   if (layer == LAYER_SHADE) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     glDisable(GL_BLEND);
 #elif defined(USE_GDI)
     canvas.SetMixCopy();

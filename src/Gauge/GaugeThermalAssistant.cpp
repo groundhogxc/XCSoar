@@ -32,7 +32,7 @@ Copyright_License {
 #include "Screen/Canvas.hpp"
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -134,7 +134,7 @@ GaugeThermalAssistantWindow::OnPaint(Canvas &canvas)
   ThermalAssistantWindow::OnPaint(canvas);
 
   if (pressed) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     canvas.SelectNullPen();

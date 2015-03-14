@@ -28,6 +28,7 @@ Copyright_License {
 
 #include <assert.h>
 
+#ifndef ANDROID
 bool
 Bitmap::Load(const UncompressedImage &uncompressed, Type type)
 {
@@ -39,6 +40,8 @@ Bitmap::Load(const UncompressedImage &uncompressed, Type type)
   ImportSurface(buffer, uncompressed);
   return true;
 }
+// TODO ANDROIDMEM: Implement Android bitmap loading method for Memory bitmaps
+#endif
 
 void
 Bitmap::Reset()

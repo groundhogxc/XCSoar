@@ -29,7 +29,7 @@ Copyright_License {
 #include "Util/Serial.hpp"
 #include "Terrain/TerrainSettings.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Projection/CompareProjection.hpp"
 #endif
 
@@ -46,7 +46,7 @@ class TerrainRenderer : private NonCopyable {
 protected:
   struct TerrainRendererSettings settings;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   CompareProjection compare_projection;
 #endif
 
@@ -64,7 +64,7 @@ public:
    * Flush the cache.
    */
   void Flush() {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     raster_renderer.Invalidate();
 #else
     compare_projection.Clear();

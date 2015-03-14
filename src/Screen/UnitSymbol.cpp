@@ -49,6 +49,9 @@ UnitSymbol::Load(ResourceId id)
   assert(IsScreenInitialized());
   assert(buffer.data == nullptr);
 
+#ifdef ANDROID
+  // TODO: ANDROIDMEM - Load Android Bitmap as Memory Bitmap instead of Texture
+#else
   ResourceLoader::Data data = ResourceLoader::Load(id);
   assert(!data.IsNull());
 
@@ -62,6 +65,7 @@ UnitSymbol::Load(ResourceId id)
   buffer.pitch = uncompressed.GetPitch();
   buffer.width = uncompressed.GetWidth();
   buffer.height = uncompressed.GetHeight();
+#endif
 #else
   bitmap.Load(id, Bitmap::Type::MONO);
   size = bitmap.GetSize();
@@ -77,7 +81,7 @@ UnitSymbol::Draw(Canvas &canvas, PixelScalar x, PixelScalar y,
   const PixelSize size = GetSize();
   const PixelSize screen_size = GetScreenSize();
   canvas.StretchMono(x, y, screen_size.cx, screen_size.cy,
-#if defined(USE_GDI) || defined(ENABLE_OPENGL)
+#if defined(USE_GDI) || defined(RENDER_OPENGL)
                      bitmap,
 #else
                      buffer,

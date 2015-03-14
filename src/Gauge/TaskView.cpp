@@ -36,7 +36,7 @@
 #include "Look/TaskLook.hpp"
 #include "MapSettings.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Screen/BufferCanvas.hpp"
 #else
 #include "Screen/OpenGL/Scope.hpp"
@@ -119,27 +119,27 @@ PaintTask(Canvas &canvas, const WindowProjection &projection,
     AirspaceRenderer airspace_renderer(airspace_look);
     airspace_renderer.SetAirspaces(airspaces);
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     BufferCanvas stencil_canvas;
     stencil_canvas.Create(canvas);
 #endif
 
     airspace_renderer.Draw(canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                            stencil_canvas,
 #endif
                            projection, settings_map.airspace);
   }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* desaturate the map background, to focus on the task */
   canvas.FadeToWhite(0xc0);
 #endif
 
   if (fai_sectors && IsFAITriangleApplicable(task)) {
     static constexpr Color fill_color = COLOR_YELLOW;
-#if defined(ENABLE_OPENGL) || defined(USE_MEMORY_CANVAS)
-#ifdef ENABLE_OPENGL
+#if defined(RENDER_OPENGL) || defined(USE_MEMORY_CANVAS)
+#ifdef RENDER_OPENGL
     const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
 

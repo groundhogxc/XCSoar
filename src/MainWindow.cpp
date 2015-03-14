@@ -343,7 +343,7 @@ MainWindow::ReinitialiseLayout()
 
   const PixelRect rc = GetClientRect();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   if (draw_thread == nullptr)
     /* no layout changes during startup */
     return;
@@ -866,7 +866,7 @@ MainWindow::ActivateMap()
                                               bottom_widget));
     }
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     if (draw_suspended) {
       draw_suspended = false;
       draw_thread->Resume();
@@ -968,7 +968,7 @@ MainWindow::SetWidget(Widget *_widget)
   if (map != nullptr) {
     map->FastHide();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
     if (!draw_suspended) {
       draw_suspended = true;
       draw_thread->BeginSuspend();

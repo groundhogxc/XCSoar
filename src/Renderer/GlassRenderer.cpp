@@ -24,7 +24,7 @@ Copyright_License {
 #include "GlassRenderer.hpp"
 #include "Screen/Canvas.hpp"
 
-#if defined(EYE_CANDY) && defined(ENABLE_OPENGL)
+#if defined(EYE_CANDY) && defined(RENDER_OPENGL)
 
 #include "Screen/OpenGL/Scissor.hpp"
 #include "Screen/OpenGL/VertexPointer.hpp"
@@ -39,7 +39,7 @@ DrawGlassBackground(Canvas &canvas, const PixelRect &rc, Color color)
 {
   canvas.DrawFilledRectangle(rc, color);
 
-#if defined(EYE_CANDY) && defined(ENABLE_OPENGL)
+#if defined(EYE_CANDY) && defined(RENDER_OPENGL)
   if (color != COLOR_WHITE)
     /* apply only to white background for now */
     return;

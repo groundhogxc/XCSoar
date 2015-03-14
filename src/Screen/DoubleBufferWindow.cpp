@@ -23,7 +23,7 @@ Copyright_License {
 
 #include "Screen/DoubleBufferWindow.hpp"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 
 #include "Screen/WindowCanvas.hpp"
 

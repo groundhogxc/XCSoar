@@ -24,7 +24,7 @@ Copyright_License {
 #ifndef XCSOAR_SCREEN_COLOR_HPP
 #define XCSOAR_SCREEN_COLOR_HPP
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Color.hpp"
 #elif defined(USE_MEMORY_CANVAS)
 #include "Screen/Memory/Color.hpp"

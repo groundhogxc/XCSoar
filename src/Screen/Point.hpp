@@ -24,7 +24,7 @@ Copyright_License {
 #ifndef XCSOAR_SCREEN_POINT_HPP
 #define XCSOAR_SCREEN_POINT_HPP
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Point.hpp"
 #elif defined(USE_MEMORY_CANVAS)
 #include "Screen/Memory/Point.hpp"

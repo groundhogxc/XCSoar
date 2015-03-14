@@ -24,7 +24,7 @@ Copyright_License {
 #ifndef XCSOAR_CACHED_RENDERER_HPP
 #define XCSOAR_CACHED_RENDERER_HPP
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Projection/CompareProjection.hpp"
 #include "Screen/BufferCanvas.hpp"
 #endif
@@ -41,7 +41,7 @@ class WindowProjection;
  * texture instead of rendering again.
  */
 class TransparentRendererCache {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* this class is a no-op on OpenGL, because OpenGL doesn't support
      color keying */
 public:

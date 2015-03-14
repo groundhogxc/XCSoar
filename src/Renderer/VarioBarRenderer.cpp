@@ -30,7 +30,7 @@ Copyright_License {
 #include "Look/VarioBarLook.hpp"
 #include "Formatter/UserUnits.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -41,7 +41,7 @@ VarioBarRenderer::Draw(Canvas &canvas, const PixelRect &rc,
                             const GlidePolar &glide_polar,
                             const bool vario_bar_avg_enabled) const
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
 

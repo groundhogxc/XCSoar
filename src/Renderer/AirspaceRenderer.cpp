@@ -66,7 +66,7 @@ AirspaceRenderer::DrawIntersections(Canvas &canvas,
 
 void
 AirspaceRenderer::Draw(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                        Canvas &stencil_canvas,
 #endif
                        const WindowProjection &projection,
@@ -78,7 +78,7 @@ AirspaceRenderer::Draw(Canvas &canvas,
     return;
 
   DrawInternal(canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                stencil_canvas,
 #endif
                projection, settings, awc, visible);
@@ -88,7 +88,7 @@ AirspaceRenderer::Draw(Canvas &canvas,
 
 void
 AirspaceRenderer::Draw(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                        Canvas &stencil_canvas,
 #endif
                        const WindowProjection &projection,
@@ -102,7 +102,7 @@ AirspaceRenderer::Draw(Canvas &canvas,
     awc.Visit(*warning_manager);
 
   Draw(canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
        stencil_canvas,
 #endif
        projection, settings, awc, AirspacePredicateTrue());
@@ -110,7 +110,7 @@ AirspaceRenderer::Draw(Canvas &canvas,
 
 void
 AirspaceRenderer::Draw(Canvas &canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
                        Canvas &stencil_canvas,
 #endif
                        const WindowProjection &projection,
@@ -130,7 +130,7 @@ AirspaceRenderer::Draw(Canvas &canvas,
   const AirspaceMapVisible visible(computer_settings, settings,
                                    aircraft, awc);
   Draw(canvas,
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
        stencil_canvas,
 #endif
        projection, settings, awc, visible);

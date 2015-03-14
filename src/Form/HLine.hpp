@@ -32,12 +32,12 @@ struct DialogLook;
  * A horizontal black line.
  */
 class HLine : public PaintWindow {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   const DialogLook &look;
 #endif
 
 public:
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   HLine(const DialogLook &_look) {}
 #else
   HLine(const DialogLook &_look):look(_look) {}

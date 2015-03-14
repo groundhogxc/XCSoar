@@ -28,7 +28,7 @@ Copyright_License {
 #include "Util/StringUtil.hpp"
 #include "Util/StringAPI.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Texture.hpp"
 #include "Screen/OpenGL/Debug.hpp"
 #else
@@ -120,7 +120,7 @@ struct TextCacheKey {
 };
 
 struct RenderedText {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLTexture *texture;
 #else
   uint8_t *data;
@@ -129,7 +129,7 @@ struct RenderedText {
 
   RenderedText(const RenderedText &other) = delete;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   RenderedText(RenderedText &&other)
     :texture(other.texture) {
     other.texture = nullptr;
@@ -159,7 +159,7 @@ struct RenderedText {
 #endif
 
   ~RenderedText() {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     delete texture;
 #else
     delete[] data;
@@ -169,7 +169,7 @@ struct RenderedText {
   RenderedText &operator=(const RenderedText &other) = delete;
 
   RenderedText &operator=(RenderedText &&other) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     std::swap(texture, other.texture);
 #else
     std::swap(data, other.data);
@@ -180,7 +180,7 @@ struct RenderedText {
   }
 
   operator TextCache::Result() const {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     return texture;
 #else
     return { data, width, width, height };
@@ -188,7 +188,7 @@ struct RenderedText {
   }
 };
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 /**
  * Without OpenGL, this library is accessed from DrawThread and UI
  * thread, therefore we need to protect it.
@@ -202,7 +202,7 @@ static Cache<TextCacheKey, RenderedText, 256u, TextCacheKey::Hash> text_cache;
 PixelSize
 TextCache::GetSize(const Font &font, const char *text)
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   const ScopeLock protect(text_cache_mutex);
 #endif
 
@@ -225,7 +225,7 @@ TextCache::GetSize(const Font &font, const char *text)
 PixelSize
 TextCache::LookupSize(const Font &font, const char *text)
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   const ScopeLock protect(text_cache_mutex);
 #endif
 
@@ -239,7 +239,7 @@ TextCache::LookupSize(const Font &font, const char *text)
   if (cached == nullptr)
     return size;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   return cached->texture->GetSize();
 #else
   return { cached->width, cached->height };
@@ -249,14 +249,14 @@ TextCache::LookupSize(const Font &font, const char *text)
 TextCache::Result
 TextCache::Get(const Font &font, const char *text)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   assert(pthread_equal(pthread_self(), OpenGL::thread));
 #endif
   assert(font.IsDefined());
   assert(text != nullptr);
 
   if (StringIsEmpty(text)) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     return nullptr;
 #else
     return Result::Null();
@@ -267,7 +267,7 @@ TextCache::Get(const Font &font, const char *text)
 
   /* look it up */
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   const ScopeLock protect(text_cache_mutex);
 #endif
 
@@ -286,7 +286,7 @@ TextCache::Get(const Font &font, const char *text)
   PixelSize size = font.TextSize(text2);
   size_t buffer_size = font.BufferSize(size);
   if (buffer_size == 0) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     return nullptr;
 #else
     return Result::Null();
@@ -295,7 +295,7 @@ TextCache::Get(const Font &font, const char *text)
 
   uint8_t *buffer = new uint8_t[buffer_size];
   if (buffer == nullptr) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
     return nullptr;
 #else
     return Result::Null();
@@ -304,10 +304,13 @@ TextCache::Get(const Font &font, const char *text)
 
   font.Render(text2, size, buffer);
   RenderedText rt(size.cx, size.cy, buffer);
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   delete[] buffer;
 #endif
+
 #elif defined(ANDROID)
+
+#ifdef RENDER_OPENGL
   PixelSize size, allocated_size;
   int texture_id = font.TextTextureGL(text, size, allocated_size);
   if (texture_id == 0)
@@ -315,6 +318,7 @@ TextCache::Get(const Font &font, const char *text)
 
   RenderedText rt(texture_id, size.cx, size.cy,
                   allocated_size.cx, allocated_size.cy);
+#endif
 #else
 #error No font renderer
 #endif
@@ -332,11 +336,11 @@ TextCache::Get(const Font &font, const char *text)
 void
 TextCache::Flush()
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   assert(pthread_equal(pthread_self(), OpenGL::thread));
 #endif
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   const ScopeLock protect(text_cache_mutex);
 #endif
 

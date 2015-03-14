@@ -31,7 +31,7 @@ Copyright_License {
 #include "Units/Units.hpp"
 #include "Screen/Layout.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -137,7 +137,7 @@ ThermalBandRenderer::_DrawThermalBand(const MoreData &basic,
       thermal_profile.emplace_back(Wt[i], ht[i]);
 
     if (!is_infobox) {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
       const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
       chart.DrawFilledY(thermal_profile, look.brush, fpen);

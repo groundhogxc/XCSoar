@@ -37,7 +37,7 @@ Copyright_License {
 #include "Widget/RowFormWidget.hpp"
 #include "UIGlobals.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scissor.hpp"
 #endif
 
@@ -175,7 +175,7 @@ TerrainPreviewWindow::OnPaint(Canvas &canvas)
 
   renderer.Generate(projection, sun_azimuth);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* enable clipping because the OpenGL terrain renderer uses a large
      texture that exceeds the window dimensions */
   GLCanvasScissor scissor(canvas);

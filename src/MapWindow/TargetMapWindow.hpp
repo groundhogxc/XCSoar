@@ -33,7 +33,7 @@ Copyright_License {
 #include "Renderer/TrailRenderer.hpp"
 #include "Compiler.h"
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
 #include "Screen/BufferCanvas.hpp"
 #endif
 
@@ -54,7 +54,7 @@ class TargetMapWindow : public BufferWindow {
   const AircraftLook &aircraft_look;
   const TopographyLook &topography_look;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   // graphics vars
 
   BufferCanvas buffer_canvas;

@@ -24,7 +24,7 @@ Copyright_License {
 #include "HeightMatrix.hpp"
 #include "RasterMap.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Geo/GeoBounds.hpp"
 #else
 #include "Projection/WindowProjection.hpp"
@@ -57,7 +57,7 @@ HeightMatrix::SetSize(unsigned width, unsigned height,
           (height + quantisation_pixels - 1) / quantisation_pixels);
 }
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 void
 HeightMatrix::Fill(const RasterMap &map, const GeoBounds &bounds,

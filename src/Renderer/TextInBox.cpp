@@ -26,7 +26,7 @@ Copyright_License {
 #include "Screen/Canvas.hpp"
 #include "Screen/Layout.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scope.hpp"
 #endif
 
@@ -133,7 +133,7 @@ TextInBox(Canvas &canvas, const TCHAR *text, PixelScalar x, PixelScalar y,
       canvas.SelectWhitePen();
 
     {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
       const GLBlend blend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       canvas.Select(Brush(COLOR_WHITE.WithAlpha(0xa0)));
 #else

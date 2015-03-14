@@ -21,7 +21,7 @@ Copyright_License {
 }
 */
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 
 #include "AirspaceRenderer.hpp"
 #include "AirspaceRendererSettings.hpp"
@@ -330,4 +330,4 @@ AirspaceRenderer::DrawInternal(Canvas &canvas,
   }
 }
 
-#endif /* ENABLE_OPENGL */
+#endif /* RENDER_OPENGL */

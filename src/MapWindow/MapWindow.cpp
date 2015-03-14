@@ -29,7 +29,7 @@ Copyright_License {
 #include "Computer/GlideComputer.hpp"
 #include "Operation/Operation.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Scissor.hpp"
 #endif
 
@@ -58,7 +58,7 @@ MapWindow::MapWindow(const MapLook &_look,
    skylines_data(nullptr),
 #endif
    compass_visible(true)
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
    , ui_generation(1), buffer_generation(0),
    scale_buffer(0)
 #endif
@@ -85,7 +85,7 @@ MapWindow::Create(ContainerWindow &parent, const PixelRect &rc)
                                      (rc.bottom + rc.top) / 2);
   visible_projection.UpdateScreenBounds();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   buffer_projection = visible_projection;
 #endif
 }
@@ -183,11 +183,11 @@ MapWindow::UpdateWeather()
 void
 MapWindow::OnPaintBuffer(Canvas &canvas)
 {
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   unsigned render_generation = ui_generation;
 #endif
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLCanvasScissor scissor(canvas);
 #endif
 
@@ -195,7 +195,7 @@ MapWindow::OnPaintBuffer(Canvas &canvas)
   Render(canvas, GetClientRect());
   draw_sw.Finish();
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /* save the generation number which was active when rendering had
      begun */
   buffer_projection = render_projection;

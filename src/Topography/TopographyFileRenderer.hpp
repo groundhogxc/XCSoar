@@ -29,7 +29,7 @@ Copyright_License {
 #include "Util/Serial.hpp"
 #include "Geo/GeoBounds.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Surface.hpp"
 #else
 #include "Screen/Brush.hpp"
@@ -51,7 +51,7 @@ struct TopographyLook;
  * Class used to manage and render vector topography layers
  */
 class TopographyFileRenderer final
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   : GLSurfaceListener
 #endif
 {
@@ -59,13 +59,13 @@ class TopographyFileRenderer final
 
   const TopographyLook &look;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   mutable ShapeRenderer shape_renderer;
 #endif
 
   Pen pen;
 
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   Brush brush;
 #endif
 
@@ -76,7 +76,7 @@ class TopographyFileRenderer final
 
   std::vector<const XShape *> visible_shapes, visible_labels;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   GLFallbackArrayBuffer *array_buffer;
   Serial array_buffer_serial;
 #endif
@@ -110,7 +110,7 @@ public:
 private:
   void UpdateVisibleShapes(const WindowProjection &projection);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   void UpdateArrayBuffer();
 
   void PaintPoint(Canvas &canvas, const WindowProjection &projection,

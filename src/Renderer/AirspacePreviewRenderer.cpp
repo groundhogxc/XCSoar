@@ -73,7 +73,7 @@ AirspacePreviewRenderer::PrepareFill(
       AirspaceClassRendererSettings::FillMode::NONE)
     return false;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ::glEnable(GL_BLEND);
   ::glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -102,7 +102,7 @@ AirspacePreviewRenderer::PrepareFill(
 void
 AirspacePreviewRenderer::UnprepareFill(Canvas &canvas)
 {
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   ::glDisable(GL_BLEND);
 #elif defined(USE_GDI)
   canvas.SetMixCopy();

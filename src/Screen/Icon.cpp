@@ -25,7 +25,7 @@ Copyright_License {
 #include "Screen/Layout.hpp"
 #include "Screen/Canvas.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "Screen/OpenGL/Texture.hpp"
 #include "Screen/OpenGL/Scope.hpp"
 
@@ -48,7 +48,7 @@ MaskedIcon::LoadResource(ResourceId id, ResourceId big_id, bool center)
   } else
     bitmap.Load(id);
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   /* postpone CalculateLayout() call, because the OpenGL surface may
      be absent now */
   size.cx = 0;
@@ -64,7 +64,7 @@ void
 MaskedIcon::CalculateLayout(bool center)
 {
   size = bitmap.GetSize();
-#ifndef ENABLE_OPENGL
+#ifndef RENDER_OPENGL
   /* left half is mask, right half is icon */
   size.cx /= 2;
 #endif
@@ -83,7 +83,7 @@ MaskedIcon::Draw(Canvas &canvas, PixelScalar x, PixelScalar y) const
 {
   assert(IsDefined());
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   if (size.cx == 0)
     /* hack: do the postponed layout calcuation now */
     const_cast<MaskedIcon *>(this)->CalculateLayout((bool)size.cy);

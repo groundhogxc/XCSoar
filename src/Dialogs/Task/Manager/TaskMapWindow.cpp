@@ -20,64 +20,45 @@ Copyright_License {
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 }
 */
-#ifndef RENDER_OPENGL
-#include "Screen/Memory/Canvas.hpp"
-#endif
 
-#include "Screen/Custom/TopCanvas.hpp"
-#include "Screen/OpenGL/Init.hpp"
-#include "Screen/OpenGL/EGL.hpp"
-#include "Screen/OpenGL/Globals.hpp"
-#include "Android/Main.hpp"
-#include "Android/NativeView.hpp"
+#include "TaskMapWindow.hpp"
+#include "Screen/Canvas.hpp"
+#include "Gauge/TaskView.hpp"
+#include "Look/MapLook.hpp"
+#include "Form/ActionListener.hpp"
+#include "Interface.hpp"
+#include "Components.hpp"
 
-void
-TopCanvas::Create(PixelSize new_size, bool full_screen, bool resizable)
-{
-  OpenGL::SetupContext();
-  OpenGL::SetupViewport(Point2D<unsigned>(new_size.cx, new_size.cy));
 #ifdef RENDER_OPENGL
-  Canvas::Create(new_size);
-#else
-  size = new_size;
+#include "Screen/OpenGL/Scissor.hpp"
 #endif
-}
 
 void
-TopCanvas::OnResize(PixelSize new_size)
+TaskMapWindow::OnPaintBuffer(Canvas &canvas)
 {
-  if (new_size == GetSize())
+  if (task == nullptr) {
+    canvas.ClearWhite();
     return;
+  }
 
-  OpenGL::SetupViewport(Point2D<unsigned>(new_size.cx, new_size.cy));
 #ifdef RENDER_OPENGL
-  Canvas::Create(new_size);
-#else
-  size = new_size;
-#endif
-}
-
-void
-TopCanvas::Flip()
-{
-  if (OpenGL::egl)
-    /* if native EGL support was detected, we can circumvent the JNI
-       call */
-    EGLSwapBuffers();
-  else
-    native_view->swap();
-}
-
-#ifndef RENDER_OPENGL
-Canvas
-TopCanvas::Lock()
-{
-  return Canvas(buffer);
-}
-
-void
-TopCanvas::Unlock()
-{
-}
+  /* enable clipping */
+  GLCanvasScissor scissor(canvas);
 #endif
 
+  const NMEAInfo &basic = CommonInterface::Basic();
+  PaintTask(canvas, GetClientRect(), *task,
+            basic.location_available ? basic.location : GeoPoint::Invalid(),
+            CommonInterface::GetMapSettings(),
+            look.task, look.airspace,
+            terrain, &airspace_database,
+            true);
+
+}
+
+bool
+TaskMapWindow::OnMouseDown(PixelScalar x, PixelScalar y)
+{
+  listener.OnAction(id);
+  return true;
+}

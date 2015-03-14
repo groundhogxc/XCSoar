@@ -34,7 +34,7 @@ Copyright_License {
 #include "ResourceId.hpp"
 #include "Thread/Mutex.hpp"
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
 #include "XShapePoint.hpp"
 #endif
 
@@ -260,7 +260,7 @@ public:
   gcc_pure
   unsigned GetSkipSteps(fixed map_scale) const;
 
-#ifdef ENABLE_OPENGL
+#ifdef RENDER_OPENGL
   gcc_pure
   GeoPoint ToGeoPoint(const ShapePoint &p) const {
     return GeoPoint(center.longitude + Angle::Native(fixed(p.x)),
