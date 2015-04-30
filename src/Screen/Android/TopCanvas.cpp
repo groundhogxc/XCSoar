@@ -40,6 +40,11 @@ TopCanvas::Create(PixelSize new_size, bool full_screen, bool resizable)
   Canvas::Create(new_size);
 #else
   size = new_size;
+
+
+  const unsigned width = new_size.cx, height = new_size.cy;
+
+  buffer.Allocate(width, height);
 #endif
 }
 
@@ -78,6 +83,16 @@ TopCanvas::Lock()
 void
 TopCanvas::Unlock()
 {
+}
+#endif
+
+#ifdef USE_MEMORY_CANVAS
+PixelRect
+TopCanvas::GetRect() const
+{
+  assert(IsDefined());
+
+  return { 0, 0, int(buffer.width), int(buffer.height) };
 }
 #endif
 

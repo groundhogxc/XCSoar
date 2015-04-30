@@ -216,7 +216,8 @@ public:
     return true;
 #elif defined(USE_FB)
     return fd >= 0;
-#else
+#elif defined(ANDROID)
+    return buffer.data != nullptr;
     // TODO: ANDROIDMEM - OpenGL Memory Buffer Version
 #endif
   }
