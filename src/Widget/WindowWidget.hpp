@@ -25,7 +25,7 @@ Copyright_License {
 #define XCSOAR_WINDOW_WIDGET_HPP
 
 #include "Widget.hpp"
-
+#include "LogFile.hpp"
 class Window;
 
 /**
@@ -39,7 +39,7 @@ public:
   /**
    * Initialise an empty instance.  Call SetWindow() to finish it.
    */
-  WindowWidget():window(nullptr) {}
+  WindowWidget():window(nullptr) {LogFormat("Make Window Widget");}
 
   /**
    * Initialise an instance with an existing #Window pointer.  It must

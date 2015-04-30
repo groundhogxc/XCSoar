@@ -28,7 +28,7 @@ Copyright_License {
 #include "Language/Language.hpp"
 #include "UIGlobals.hpp"
 #include "Simulator.hpp"
-
+#include "LogFile.hpp"
 #ifdef SIMULATOR_AVAILABLE
 
 class SimulatorPromptWidget final : public WindowWidget {
@@ -37,7 +37,7 @@ class SimulatorPromptWidget final : public WindowWidget {
 public:
   SimulatorPromptWidget(const DialogLook &_look,
                         ActionListener &_action_listener)
-    :w(_look, _action_listener, true) {}
+    :w(_look, _action_listener, true) {LogFormat("Making Widget");}
 
   /* virtual methods from class Widget */
   virtual void Prepare(ContainerWindow &parent,
@@ -45,9 +45,10 @@ public:
     WindowStyle style;
     style.Hide();
     style.ControlParent();
-
+    LogFormat("Preparing Widget");
     w.Create(parent, rc, style);
     SetWindow(&w);
+    LogFormat("Widget prepared");
   }
 };
 
@@ -58,14 +59,16 @@ dlgSimulatorPromptShowModal()
 {
 #ifdef SIMULATOR_AVAILABLE
   const DialogLook &look = UIGlobals::GetDialogLook();
+  LogFormat("Make Widget");
   WidgetDialog dialog(look);
+  LogFormat("Make Simulator Prompt Widget");
   SimulatorPromptWidget widget(look, dialog);
-
+  LogFormat("Make Dialog");
   dialog.CreateFull(UIGlobals::GetMainWindow(), _T(""), &widget);
-
+  LogFormat("Show Dialog");
   const int result = dialog.ShowModal();
   dialog.StealWidget();
-
+  LogFormat("Dialog Done");
   switch (result) {
   case SimulatorPromptWindow::FLY:
     return SPR_FLY;

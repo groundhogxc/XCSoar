@@ -28,6 +28,7 @@ Copyright_License {
 #include "Screen/Features.hpp"
 #include "Thread/Debug.hpp"
 #include "Compiler.h"
+#include "LogFile.hpp"
 
 #include <assert.h>
 
@@ -223,7 +224,7 @@ public:
     :parent(nullptr), size(0, 0),
      font(nullptr),
      visible(true), focused(false), capture(false), has_border(false),
-     double_clicks(false) {}
+     double_clicks(false) {LogFormat("Make Window");}
 #else
   Window():hWnd(nullptr), prev_wndproc(nullptr),
            double_clicks(false), custom_painting(false) {}

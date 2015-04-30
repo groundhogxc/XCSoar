@@ -27,6 +27,7 @@ Copyright_License {
 #include "Blackboard/InterfaceBlackboard.hpp"
 #include "Thread/Debug.hpp"
 #include "Compiler.h"
+#include "LogFile.hpp"  /* XXLOGAMEM */
 
 struct UIState;
 class MainWindow;
@@ -141,6 +142,7 @@ namespace CommonInterface {
   gcc_const
   static inline LiveBlackboard &GetLiveBlackboard() {
     assert(InMainThread());
+    LogFormat("GetLiveBlackboard...");         /* XXLOGAMEM */
 
     return Private::blackboard;
   }

@@ -34,6 +34,8 @@ Copyright_License {
 #include "Look/DialogLook.hpp"
 #include "Form/Button.hpp"
 
+#include "LogFile.hpp"
+
 class ActionListener;
 
 class SimulatorPromptWindow final : public ContainerWindow {
@@ -62,7 +64,10 @@ public:
                         ActionListener &_action_listener,
                         bool _quit)
     :look(_look), action_listener(_action_listener),
-     have_quit_button(_quit) {}
+     have_quit_button(_quit)
+  {
+    LogFormat("Making SimulatorPromptWindow");
+  }
 
 protected:
   /* virtual methods from class Window */

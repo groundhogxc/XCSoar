@@ -24,6 +24,7 @@ Copyright_License {
 #include "Screen/TopWindow.hpp"
 #include "Screen/Custom/TopCanvas.hpp"
 #include "Hardware/CPU.hpp"
+#include "LogFile.hpp"
 
 #ifdef USE_MEMORY_CANVAS
 #include "Screen/Memory/Canvas.hpp"
@@ -43,7 +44,7 @@ TopWindow::Create(const TCHAR *text, PixelSize size,
                   TopWindowStyle style)
 {
   invalidated = true;
-
+  LogFormat("Custom TopWindow Create");
 #if defined(USE_X11) || defined(USE_WAYLAND)
   CreateNative(text, size, style);
 #endif
@@ -67,10 +68,12 @@ TopWindow::Create(const TCHAR *text, PixelSize size,
 #endif
 
   if (!screen->IsDefined()) {
+    LogFormat("Custom TopWindow Create: Screen not defined");
     delete screen;
     screen = nullptr;
     return;
   }
+  LogFormat("Custom TopWindow Create: Screen defined");
 
   ContainerWindow::Create(nullptr, screen->GetRect(), style);
 

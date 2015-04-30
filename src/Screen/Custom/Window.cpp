@@ -25,7 +25,7 @@ Copyright_License {
 #include "Screen/ContainerWindow.hpp"
 #include "Screen/Debug.hpp"
 #include "Screen/Canvas.hpp"
-
+#include "LogFile.hpp"
 void
 Window::Create(ContainerWindow *parent, PixelRect rc,
                const WindowStyle window_style)
@@ -37,7 +37,7 @@ Window::Create(ContainerWindow *parent, PixelRect rc,
   assert(rc.bottom - rc.top < 0x8000);
 
   double_clicks = window_style.double_clicks;
-
+LogFormat("Window Create");
   this->parent = parent;
   position = rc.GetOrigin();
   size = rc.GetSize();

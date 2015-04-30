@@ -201,16 +201,18 @@ Startup()
   TopWindowStyle style;
   if (CommandLine::full_screen)
     style.FullScreen();
-
+  LogFormat("Did Fullscreen");
   if (!IsWindowsCE())
     style.Resizable();
-
+  LogFormat("Did Resiyable");
   MainWindow *const main_window = CommonInterface::main_window =
     new MainWindow(CommonInterface::status_messages);
+  LogFormat("Mainwindow new");
   main_window->Create(SystemWindowSize(), style);
+  LogFormat("Mainwindow Created?");
   if (!main_window->IsDefined())
     return false;
-
+  LogFormat("Mainwindow was defined");
 #ifdef ENABLE_OPENGL
   LogFormat("OpenGL: "
 #ifdef HAVE_DYNAMIC_EGL
@@ -239,6 +241,7 @@ Startup()
 #endif
 
   main_window->Initialise();
+  LogFormat("Show simulator prompt");
 
 #ifdef SIMULATOR_AVAILABLE
   // prompt for simulator if not set by command line argument "-simulator" or "-fly"
@@ -258,11 +261,13 @@ Startup()
     }
   }
 #endif
+  LogFormat(global_simulator_flag ? "Show simulator? Yes" : "Show simulator? No");
 
   CommonInterface::SetSystemSettings().SetDefaults();
   CommonInterface::SetComputerSettings().SetDefaults();
   CommonInterface::SetUISettings().SetDefaults();
   CommonInterface::SetUIState().Clear();
+  LogFormat("Common interface initialized");
 
   const auto &computer_settings = CommonInterface::GetComputerSettings();
   const auto &ui_settings = CommonInterface::GetUISettings();
@@ -501,10 +506,11 @@ Shutdown()
 {
   VerboseOperationEnvironment operation;
   gcc_unused ScopeBusyIndicator busy;
-
+  LogFormat("Entering shutdown 1...");
   MainWindow *const main_window = CommonInterface::main_window;
+  LogFormat("Entering shutdown 2...");
   auto &live_blackboard = CommonInterface::GetLiveBlackboard();
-
+  LogFormat("Entering shutdown 3...");
   // Show progress dialog
   operation.SetText(_("Shutdown, please wait..."));
 
