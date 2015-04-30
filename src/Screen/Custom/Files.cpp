@@ -46,6 +46,10 @@ static const char *const all_font_paths[] = {
 #elif defined(WIN32) && !defined(HAVE_POSIX)
   /* just for the experimental WINSDL target */
   "c:\\windows\\fonts\\arial.ttf",
+#elif defined(ANDROID)
+  "/system/fonts/DroidSans.ttf",
+  "/system/fonts/DroidSerif-Regular.ttf",
+  "/system/fonts/Roboto-Regular.ttf",
 #elif defined(KOBO)
   "/mnt/onboard/XCSoar/fonts/DejaVuSansCondensed.ttf",
   "/mnt/onboard/fonts/Vera.ttf",
@@ -85,6 +89,10 @@ static const char *const all_bold_font_paths[] = {
   "/Library/Fonts/Arial Bold.ttf",
   "/Library/Fonts/Microsoft/Arial Bold.ttf",
 #endif
+#elif defined(ANDROID)
+  "/system/fonts/DroidSans-Bold.ttf",
+  "/system/fonts/DroidSerif-Bold.ttf",
+  "/system/fonts/Roboto-Bold.ttf",
 #elif defined(KOBO)
   "/mnt/onboard/XCSoar/fonts/DejaVuSansCondensed-Bold.ttf",
   "/mnt/onboard/fonts/VeraBd.ttf",
@@ -120,6 +128,9 @@ static const char *const all_italic_font_paths[] = {
   "/Library/Fonts/Georgia Italic.ttf",
   "/Library/Fonts/Arial Narrow Italic.ttf",
 #endif
+#elif defined(ANDROID)
+  "/system/fonts/DroidSerif-Italic.ttf",
+  "/system/fonts/Roboto-Italic.ttf",
 #elif defined(KOBO)
   "/mnt/onboard/XCSoar/fonts/DejaVuSansCondensed-Oblique.ttf",
   "/mnt/onboard/fonts/VeraIt.ttf",
@@ -151,6 +162,9 @@ static const char *const all_bold_italic_font_paths[] = {
   "/Library/Fonts/Georgia Bold Italic.ttf",
   "/Library/Fonts/Arial Narrow Bold Italic.ttf",
 #endif
+#elif defined(ANDROID)
+  "/system/fonts/DroidSerif-BoldItalic.ttf",
+  "/system/fonts/Roboto-BoldItalic.ttf",
 #elif defined(KOBO)
   "/mnt/onboard/XCSoar/fonts/DejaVuSansCondensed-BoldOblique.ttf",
   "/mnt/onboard/fonts/VeraBI.ttf",
@@ -181,6 +195,8 @@ static const char *const all_monospace_font_paths[] = {
   "/mnt/onboard/XCSoar/fonts/DejaVuSansMono.ttf",
   "/mnt/onboard/fonts/VeraMono.ttf",
   "/opt/xcsoar/share/fonts/VeraMono.ttf",
+#elif defined(ANDROID)
+  "/system/fonts/DroidSansMono.ttf",
 #else
   "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf",
   "/usr/share/fonts/truetype/DejaVuSansMono.ttf",

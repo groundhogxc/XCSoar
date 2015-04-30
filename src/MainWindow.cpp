@@ -64,6 +64,10 @@ Copyright_License {
 #include "Screen/Custom/Cache.hpp"
 #endif
 
+#ifdef USE_FREETYPE
+#include "Screen/FreeType/Init.hpp"
+#endif
+
 #if !defined(WIN32) && !defined(ANDROID)
 #include <unistd.h>
 #endif
@@ -200,6 +204,14 @@ MainWindow::Initialise()
 {
   Layout::Initialize(GetSize(),
                      CommonInterface::GetUISettings().GetPercentScale());
+
+
+#if defined(USE_FREETYPE) && defined(ANDROID)
+  FreeType::Initialise();
+  Font::Initialise();
+  // TODO: ANDROIDMEM - FreeType deinitialization
+  // event_queue = new EventQueue(); necessary?
+#endif
 
   LogFormat("Initialise fonts");
   if (!Fonts::Initialize()) {

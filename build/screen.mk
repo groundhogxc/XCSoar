@@ -205,6 +205,7 @@ endif
 ifeq ($(USE_MEMORY_CANVAS),y)
 SCREEN_SOURCES += \
 	$(SCREEN_SRC_DIR)/Custom/Cache.cpp \
+	$(SCREEN_SRC_DIR)/Custom/Files.cpp \
 	$(SCREEN_SRC_DIR)/Memory/Bitmap.cpp \
 	$(SCREEN_SRC_DIR)/Memory/RawBitmap.cpp \
 	$(SCREEN_SRC_DIR)/Memory/VirtualCanvas.cpp \
