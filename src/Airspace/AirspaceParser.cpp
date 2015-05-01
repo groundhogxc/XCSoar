@@ -575,6 +575,10 @@ ParseLine(Airspaces &airspace_database, StringParser<TCHAR> &&input,
     case _T('n'):
       if (input.SkipWhitespace())
         temp_area.name = input.c_str();
+
+      // For Austrian OpenAir Files, where glider sectors became class G TRAs in 2015
+      if (temp_area.type == CLASSG && input.Match(_T("TRA "), 4))
+        temp_area.type = TRAG;
       break;
 
     case _T('L'):
