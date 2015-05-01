@@ -375,7 +375,7 @@ private:
     AirspaceClass type = airspace.GetType();
 
     if (settings.black_outline)
-      canvas.SelectBlackPen();
+      canvas.Select(Pen(Layout::ScalePenWidthLazy(1),COLOR_BLACK));
     else if (settings.classes[type].border_width == 0)
       // Don't draw outlines if border_width == 0
       return false;
