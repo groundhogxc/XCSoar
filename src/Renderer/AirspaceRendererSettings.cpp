@@ -68,6 +68,7 @@ AirspaceRendererSettings::SetDefaults()
   classes[CLASSE].brush = 3;
   classes[CLASSF].brush = 3;
   classes[RMZ].brush = 3;
+  classes[TRAG].brush = 2;
 #endif
 
   classes[OTHER].SetColors(RGB8_CYAN);
@@ -81,4 +82,5 @@ AirspaceRendererSettings::SetDefaults()
   classes[CLASSE].SetColors(RGB8_GREEN.Darken());
   classes[CLASSF].SetColors(RGB8_GREEN.Darken());
   classes[RMZ].SetColors(RGB8_MAGENTA.Darken());
+  classes[TRAG].SetColors(RGB8_YELLOW.Darken());
 }
