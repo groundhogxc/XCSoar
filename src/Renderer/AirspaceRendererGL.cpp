@@ -78,7 +78,7 @@ private:
       SetupInterior(airspace);
       if (warning_manager.HasWarning(airspace) ||
           warning_manager.IsInside(airspace) ||
-          look.thick_pen.GetWidth() >= 2 * screen_radius ||
+          look.thick_pen.GetWidthPixels() >= 2 * screen_radius ||
           class_settings.fill_mode ==
           AirspaceClassRendererSettings::FillMode::ALL) {
         // fill whole circle
@@ -90,7 +90,7 @@ private:
         canvas.SelectHollowBrush();
         canvas.Select(pen_donut);
         canvas.DrawCircle(screen_center.x, screen_center.y,
-                          screen_radius - look.thick_pen.GetWidth() / 4);
+                          screen_radius - look.thick_pen.GetWidthPixels() / 4);
       }
     }
 

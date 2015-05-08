@@ -199,11 +199,11 @@ Canvas::DrawPolygon(const BulkPixelPoint *points, unsigned num_points)
   if (IsPenOverBrush()) {
     pen.Bind();
 
-    if (pen.GetWidth() <= 2) {
+    if (pen.GetWidthPixels() <= 2) {
       glDrawArrays(GL_LINE_LOOP, 0, num_points);
     } else {
       unsigned vertices = LineToTriangles(points, num_points, vertex_buffer,
-                                          pen.GetWidth(), true);
+                                          pen.GetWidthPixels(), true);
       if (vertices > 0) {
         vp.Update(vertex_buffer.begin());
         glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices);
@@ -234,11 +234,11 @@ Canvas::DrawTriangleFan(const BulkPixelPoint *points, unsigned num_points)
   if (IsPenOverBrush()) {
     pen.Bind();
 
-    if (pen.GetWidth() <= 2) {
+    if (pen.GetWidthPixels() <= 2) {
       glDrawArrays(GL_LINE_LOOP, 0, num_points);
     } else {
       unsigned vertices = LineToTriangles(points, num_points, vertex_buffer,
-                                          pen.GetWidth(), true);
+                                          pen.GetWidthPixels(), true);
       if (vertices > 0) {
         vp.Update(vertex_buffer.begin());
         glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices);
@@ -317,8 +317,8 @@ Canvas::DrawLinePiece(const PixelPoint a, const PixelPoint b)
   pen.Bind();
 
   const BulkPixelPoint v[] = { {a.x, a.y}, {b.x, b.y} };
-  if (pen.GetWidth() > 2) {
-    unsigned strip_len = LineToTriangles(v, 2, vertex_buffer, pen.GetWidth(),
+  if (pen.GetWidthPixels() > 2) {
+    unsigned strip_len = LineToTriangles(v, 2, vertex_buffer, pen.GetWidthPixels(),
                                          false, true);
     if (strip_len > 0) {
       const ScopeVertexPointer vp(vertex_buffer.begin());
@@ -381,11 +381,11 @@ Canvas::DrawCircle(int x, int y, unsigned radius)
   OpenGL::solid_shader->Use();
 #endif
 
-  if (IsPenOverBrush() && pen.GetWidth() > 2) {
+  if (IsPenOverBrush() && pen.GetWidthPixels() > 2) {
     ScopeVertexPointer vp;
     GLDonutVertices vertices(x, y,
-                             radius - pen.GetWidth() / 2,
-                             radius + pen.GetWidth() / 2);
+                             radius - pen.GetWidthPixels() / 2,
+                             radius + pen.GetWidthPixels() / 2);
     if (!brush.IsHollow()) {
       vertices.BindInnerCircle(vp);
       brush.Bind();

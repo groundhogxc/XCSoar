@@ -229,10 +229,12 @@ public:
   void DrawOutlineRectangle(int left, int top, int right, int bottom,
                             Color color) {
     color.Bind();
+    const unsigned scaledWidth=Layout::PenWidthPixels(1);
+    const unsigned glWidth=scaledWidth > OpenGL::max_linewidth ? OpenGL::max_linewidth : scaledWidth; // GL behavior seems to be undefined otherwise
 #if defined(HAVE_GLES) && !defined(HAVE_GLES2)
-    glLineWidthx(1 << 16);
+    glLineWidthx(glWidth << 16);
 #else
-    glLineWidth(1);
+    glLineWidth(glWidth);
 #endif
 
     OutlineRectangleGL(left, top, right, bottom);
