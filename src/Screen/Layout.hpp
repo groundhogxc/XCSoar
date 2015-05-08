@@ -183,14 +183,59 @@ namespace Layout
     return (x * (int)small_scale) >> 10;
   }
 
+  /**
+   * Scale line width according to pixel density of display (PPI) for non-OpenGL displays
+   *
+   * ScalePenWidth is typically called when a pen is created
+   * In OpenGL, the pen object stores the logical line width
+   * (defining the width in units of pixels on a 164 PPI display)
+   * therefore no scaling is done here.
+   * For direct setting of native line widths, there will be a special unscaled pen
+   * (if ever needed)
+   * All other displays: Pen object stores the line width in pixels
+   * This is historic, in the future all renderers should act the same
+   *
+   * @param width logical line width (relative to 1 pixel on 164 PPI display)
+   *
+   * returns line width in pixels for non-OpenGL systems, logical line width otherwise
+   */
   gcc_const
   static inline unsigned
   ScalePenWidth(unsigned width)
   {
+#ifdef ENABLE_OPENGL
+    return width; // in OpenGL scaling happens in Bind()/GetWidthPixel()
+#else
     if (!ScaleSupported())
       return width;
 
     return (width * pen_width_scale) >> 10;
+#endif
+  }
+
+  /**
+   * Scale line width according to pixel density of display (PPI)
+   *
+   * Currently, pixel scaling is done globally only in OpenGL
+   * In OpenGL, the pen object stores the logical line width
+   *    (defining the width in units of pixels on a 164 PPI display)
+   * All other displays: Pen object stores the line width in pixels
+   * PenWidthPixel is typically called by the pen binding function or
+   * other drawing functions explicitly asking for pixel widths of
+   * lines
+   *
+   * @param width logical line width (relative to 1 pixel on 164 PPI display)
+   *
+   * returns line width in pixels
+   */
+  gcc_const
+  static inline unsigned
+  PenWidthPixels(unsigned pen_width)
+  {
+    if (!ScaleSupported())
+      return pen_width;
+
+    return (pen_width * pen_width_scale) >> 10;
   }
 
   gcc_const

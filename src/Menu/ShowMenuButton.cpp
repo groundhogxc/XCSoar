@@ -62,10 +62,10 @@ ShowMenuButtonRenderer::DrawButton(Canvas &canvas, const PixelRect &rc,
                                    bool enabled, bool focused,
                                    bool pressed) const
 {
-  const unsigned pen_width = Layout::ScalePenWidth(2);
-  const unsigned padding = Layout::GetTextPadding() + pen_width;
+  const unsigned pen_width = 2;
+  const unsigned padding = Layout::GetTextPadding() + Layout::PenWidthPixels(pen_width);
 
-  canvas.Select(Pen(pen_width, COLOR_BLACK));
+  canvas.Select(Pen(Layout::ScalePenWidth(pen_width), COLOR_BLACK));
   canvas.DrawRoundRectangle(rc.left, rc.top, rc.right - 1, rc.bottom - 1,
                             Layout::VptScale(8), Layout::VptScale(8));
 

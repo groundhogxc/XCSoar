@@ -26,6 +26,7 @@ Copyright_License {
 
 #include "Screen/Color.hpp"
 #include "Screen/Features.hpp"
+#include "Screen/Layout.hpp"
 
 #ifdef ENABLE_OPENGL
 #include "Screen/OpenGL/Globals.hpp"
@@ -176,10 +177,31 @@ public:
    */
   HPEN Native() const { return pen; }
 #else
+
+  /**
+   * Returns the pen width
+   *
+   * @return pen width OpenGL: logical width units, otherwise: pixels units
+   */
   unsigned
   GetWidth() const
   {
     return width;
+  }
+
+  /**
+   * Returns the pen width in pixel units
+   *
+   * @return pen width in pixel units
+   */
+  unsigned
+  GetWidthPixels() const
+  {
+#ifdef ENABLE_OPENGL
+    return Layout::PenWidthPixels(width);
+#else
+    return width;
+#endif
   }
 
   const Color
@@ -192,7 +214,8 @@ public:
 #ifdef ENABLE_OPENGL
 private:
   void BindStyle() const {
-    const unsigned glWidth=width > OpenGL::max_linewidth ? OpenGL::max_linewidth : width; // GL behavior seems to be undefined otherwise
+    const unsigned scaledWidth = Layout::PenWidthPixels(width);
+    const unsigned glWidth=scaledWidth > OpenGL::max_linewidth ? OpenGL::max_linewidth : scaledWidth; // GL behavior seems to be undefined otherwise
 #if defined(HAVE_GLES) && !defined(HAVE_GLES2)
     glLineWidthx(glWidth << 16);
 #else
