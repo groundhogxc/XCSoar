@@ -33,7 +33,7 @@ Copyright_License {
  */
 struct DisplaySettings {
   DisplayOrientation orientation;
-
+  int line_rendering_scale;  // Global factor (percent) for line width scaling
   void SetDefaults();
 };
 

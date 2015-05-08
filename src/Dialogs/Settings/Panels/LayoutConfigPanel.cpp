@@ -35,6 +35,8 @@ Copyright_License {
 #include "UtilsSettings.hpp"
 #include "Asset.hpp"
 #include "Menu/ShowMenuButton.hpp"
+#include "Screen/Layout.hpp"
+
 
 #ifdef USE_POLL_EVENT
 #include "Event/Globals.hpp"
@@ -44,6 +46,7 @@ Copyright_License {
 enum ControlIndex {
   MapOrientation,
   AppInfoBoxGeom,
+  LineRenderingScale,
   AppFlarmLocation,
   TabDialogStyle,
   AppStatusMessageAlignment,
@@ -176,6 +179,11 @@ LayoutConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
           _("A list of possible InfoBox layouts. Do some trials to find the best for your screen size."),
           info_box_geometry_list, (unsigned)ui_settings.info_boxes.geometry);
 
+  AddInteger(_("Screen scaling"),
+               _("A percentage to scale the size of lines drawn. Use larger values if display is far away from eyes (panel mount etc.)"),
+               _T("%u %%"), _T("%u"), 30, 300, 10, ui_settings.display.line_rendering_scale);
+
+
   AddEnum(_("FLARM display"), _("Choose a location for the FLARM display."),
           flarm_display_location_list,
           (unsigned)ui_settings.traffic.gauge_location);
@@ -228,6 +236,17 @@ LayoutConfigPanel::Save(bool &_changed)
       SaveValueEnum(MapOrientation, ProfileKeys::MapOrientation,
                     ui_settings.display.orientation);
     changed |= orientation_changed;
+  }
+
+  bool line_rendering_scale_changed = false;
+
+  line_rendering_scale_changed =
+    SaveValue(LineRenderingScale, ProfileKeys::LineRenderingScale,
+              ui_settings.display.line_rendering_scale);
+  changed |= line_rendering_scale_changed;
+  if(line_rendering_scale_changed) {
+    Layout::pen_width_scale =
+      std::max(1024u, Display::GetXDPI() * 1024u * ui_settings.display.line_rendering_scale / 100u / 80u);
   }
 
   bool info_box_geometry_changed = false;

@@ -216,6 +216,7 @@ extern const char FlarmNorthUp[];
 
 extern const char IgnoreNMEAChecksum[];
 extern const char MapOrientation[];
+extern const char LineRenderingScale[];
 
 extern const char ClimbMapScale[];
 extern const char CruiseMapScale[];
