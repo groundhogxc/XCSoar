@@ -220,6 +220,7 @@ const char FlarmNorthUp[] = "FlarmRadarNorthUp";
 
 const char IgnoreNMEAChecksum[] = "IgnoreNMEAChecksum";
 const char MapOrientation[] = "DisplayOrientation";
+const char LineRenderingScale[] = "LineRenderingScale";
 
 const char ClimbMapScale[] = "ClimbMapScale";
 const char CruiseMapScale[] = "CruiseMapScale";

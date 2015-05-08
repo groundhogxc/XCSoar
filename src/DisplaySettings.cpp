@@ -27,4 +27,5 @@ void
 DisplaySettings::SetDefaults()
 {
   orientation = DisplayOrientation::DEFAULT;
+  line_rendering_scale = 100;
 }
