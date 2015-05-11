@@ -27,5 +27,5 @@ Copyright_License {
 void
 WaveLook::Initialise()
 {
-  pen.Create(Layout::ScalePenWidth(3), COLOR_BLUE);
+  pen.Create(Layout::ScalePenWidth(6), COLOR_BLUE);
 }

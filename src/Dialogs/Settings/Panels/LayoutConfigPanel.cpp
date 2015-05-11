@@ -181,7 +181,7 @@ LayoutConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 
   AddInteger(_("Screen scaling"),
                _("A percentage to scale the size of lines drawn. Use larger values if display is far away from eyes (panel mount etc.)"),
-               _T("%u %%"), _T("%u"), 30, 300, 10, ui_settings.display.line_rendering_scale);
+               _T("%u %%"), _T("%u"), 30, 400, 10, ui_settings.display.line_rendering_scale);
 
 
   AddEnum(_("FLARM display"), _("Choose a location for the FLARM display."),
@@ -244,10 +244,10 @@ LayoutConfigPanel::Save(bool &_changed)
     SaveValue(LineRenderingScale, ProfileKeys::LineRenderingScale,
               ui_settings.display.line_rendering_scale);
   changed |= line_rendering_scale_changed;
-  if(line_rendering_scale_changed) {
+  if(line_rendering_scale_changed)
     Layout::pen_width_scale =
-      std::max(1024u, Display::GetXDPI() * 1024u * ui_settings.display.line_rendering_scale / 100u / 80u);
-  }
+      std::max(1024u, Display::GetXDPI() * 1024u * ui_settings.display.line_rendering_scale >> 14);
+    //  "... >> 14" is optimized version of ... / 100u / 164u), using 164 PPI as reference
 
   bool info_box_geometry_changed = false;
 

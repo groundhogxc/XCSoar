@@ -88,7 +88,7 @@ AirspaceLook::Initialise(const AirspaceRendererSettings &settings,
     brushes[i].Create(bitmaps[i]);
 #endif
 
-  thick_pen.Create(Layout::ScalePenWidth(10), COLOR_BLACK);
+  thick_pen.Create(Layout::ScalePenWidth(20), COLOR_BLACK);
 
   intercept_icon.LoadResource(IDB_AIRSPACEI, IDB_AIRSPACEI_HD);
 

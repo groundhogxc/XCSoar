@@ -95,7 +95,7 @@ void
 TrailLook::Initialise(const TrailSettings &settings)
 {
   unsigned iwidth;
-  unsigned minwidth = Layout::ScalePenWidth(2);
+  unsigned minwidth = Layout::ScalePenWidth(4);
 
   for (unsigned i = 0; i < NUMSNAILCOLORS; ++i) {
     short ih = i * 200 / (NUMSNAILCOLORS - 1);
@@ -107,7 +107,7 @@ TrailLook::Initialise(const TrailSettings &settings)
     else
       iwidth = std::max(minwidth,
                         (i - NUMSNAILCOLORS / 2) *
-                        Layout::ScalePenWidth(16u) / NUMSNAILCOLORS);
+                        Layout::ScalePenWidth(32u) / NUMSNAILCOLORS);
 
     trail_widths[i] = iwidth;
     trail_brushes[i].Create(color);

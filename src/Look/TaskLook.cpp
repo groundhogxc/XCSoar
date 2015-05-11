@@ -34,27 +34,27 @@ TaskLook::Initialise()
   const Color bearing_color = Color(0x3e, 0x30, 0x5f);
   const Color isoline_color = bearing_color;
 
-  oz_current_pen.Create(Pen::SOLID, Layout::ScalePenWidth(2), task_color);
-  oz_active_pen.Create(Pen::SOLID, Layout::ScalePenWidth(1), task_color);
-  oz_inactive_pen.Create(Pen::SOLID, Layout::ScalePenWidth(1),
+  oz_current_pen.Create(Pen::SOLID, Layout::ScalePenWidth(4), task_color);
+  oz_active_pen.Create(Pen::SOLID, Layout::ScalePenWidth(2), task_color);
+  oz_inactive_pen.Create(Pen::SOLID, Layout::ScalePenWidth(2),
                       DarkColor(task_color));
 
-  leg_active_pen.Create(Pen::DASH2, Layout::ScalePenWidth(2), task_color);
-  leg_inactive_pen.Create(Pen::DASH2, Layout::ScalePenWidth(1), task_color);
-  arrow_active_pen.Create(Layout::ScalePenWidth(2), task_color);
-  arrow_inactive_pen.Create(Layout::ScalePenWidth(1), task_color);
+  leg_active_pen.Create(Pen::DASH2, Layout::ScalePenWidth(4), task_color);
+  leg_inactive_pen.Create(Pen::DASH2, Layout::ScalePenWidth(2), task_color);
+  arrow_active_pen.Create(Layout::ScalePenWidth(4), task_color);
+  arrow_inactive_pen.Create(Layout::ScalePenWidth(2), task_color);
 
-  isoline_pen.Create(Pen::DASH2, Layout::ScalePenWidth(1), isoline_color);
+  isoline_pen.Create(Pen::DASH2, Layout::ScalePenWidth(2), isoline_color);
 
-  bearing_pen.Create(Layout::ScalePenWidth(2),
+  bearing_pen.Create(Layout::ScalePenWidth(4),
                   HasColors() ? bearing_color : COLOR_BLACK);
   best_cruise_track_brush.Create(ColorWithAlpha(bearing_color, ALPHA_OVERLAY));
-  best_cruise_track_pen.Create(Layout::ScalePenWidth(1),
+  best_cruise_track_pen.Create(Layout::ScalePenWidth(2),
                                HasColors()
                                ? DarkColor(bearing_color)
                                : COLOR_BLACK);
 
-  highlight_pen.Create(Layout::ScalePenWidth(4), COLOR_BLACK);
+  highlight_pen.Create(Layout::ScalePenWidth(8), COLOR_BLACK);
 
   target_icon.LoadResource(IDB_TARGET, IDB_TARGET_HD);
 

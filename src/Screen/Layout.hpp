@@ -206,8 +206,8 @@ namespace Layout
 #ifdef ENABLE_OPENGL
     return width; // in OpenGL scaling happens in Bind()/GetWidthPixel()
 #else
-    if (!ScaleSupported())
-      return width;
+    if (!ScaleSupported())  // Only relevant on Altair
+      return width / 2;     // Altair uses 80 PPI pixel reference
 
     return (width * pen_width_scale) >> 10;
 #endif
@@ -232,8 +232,8 @@ namespace Layout
   static inline unsigned
   PenWidthPixels(unsigned pen_width)
   {
-    if (!ScaleSupported())
-      return pen_width;
+    if (!ScaleSupported())  // Only relevant on Altair
+      return pen_width / 2; // Altair uses 80 PPI pixel reference
 
     return (pen_width * pen_width_scale) >> 10;
   }
@@ -242,10 +242,14 @@ namespace Layout
   static inline unsigned
   ScaleFinePenWidth(unsigned width)
   {
-    if (!ScaleSupported())
+#ifdef ENABLE_OPENGL
+    return width; // in OpenGL scaling happens in Bind()/GetWidthPixel()
+#else
+  if (!ScaleSupported())
       return width;
 
     return (width * fine_pen_width_scale) >> 10;
+#endif
   }
 
   /**
