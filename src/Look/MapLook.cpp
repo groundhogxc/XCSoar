@@ -52,12 +52,12 @@ MapLook::Initialise(const MapSettings &settings,
   terrain_warning_icon.LoadResource(IDB_TERRAINWARNING, IDB_TERRAINWARNING_HD);
 
   compass_brush.Create(IsDithered() ? COLOR_WHITE : ColorWithAlpha(Color(207, 207, 207), alpha));
-  compass_pen.Create(Layout::ScalePenWidth(1),
+  compass_pen.Create(Layout::ScalePenWidth(2),
                      HasColors()? COLOR_GRAY : COLOR_BLACK);
   compass_triangle_brush.Create(IsDithered()
                                 ? COLOR_BLACK
                                 : ColorWithAlpha(Color(50, 50, 50), alpha));
-  compass_triangle_pen.Create(Layout::ScalePenWidth(1),
+  compass_triangle_pen.Create(Layout::ScalePenWidth(2),
                               HasColors() ? COLOR_GRAY : COLOR_BLACK);
 
   traffic_safe_icon.LoadResource(IDB_TRAFFIC_SAFE, IDB_TRAFFIC_SAFE_HD, false);
@@ -65,18 +65,18 @@ MapLook::Initialise(const MapSettings &settings,
   traffic_alarm_icon.LoadResource(IDB_TRAFFIC_ALARM, IDB_TRAFFIC_ALARM_HD, false);
 
   static constexpr Color clrSepia(0x78,0x31,0x18);
-  reach_terrain_pen.Create(Pen::DASH3, Layout::ScalePenWidth(1), clrSepia);
-  reach_terrain_pen_thick.Create(Pen::DASH3, Layout::ScalePenWidth(2), clrSepia);
+  reach_terrain_pen.Create(Pen::DASH3, Layout::ScalePenWidth(2), clrSepia);
+  reach_terrain_pen_thick.Create(Pen::DASH3, Layout::ScalePenWidth(4), clrSepia);
 
   static constexpr Color clrBlupia(0x38,0x55,0xa7);
-  reach_working_pen.Create(Pen::DASH1, Layout::ScalePenWidth(1), clrBlupia);
-  reach_working_pen_thick.Create(Pen::DASH1, Layout::ScalePenWidth(2), clrBlupia);
+  reach_working_pen.Create(Pen::DASH1, Layout::ScalePenWidth(2), clrBlupia);
+  reach_working_pen_thick.Create(Pen::DASH1, Layout::ScalePenWidth(4), clrBlupia);
 
   track_line_pen.Create(3, COLOR_GRAY);
 
-  contest_pens[0].Create(Layout::ScalePenWidth(1) + 2, COLOR_RED);
-  contest_pens[1].Create(Layout::ScalePenWidth(1) + 1, COLOR_ORANGE);
-  contest_pens[2].Create(Layout::ScalePenWidth(1), COLOR_BLUE);
+  contest_pens[0].Create(Layout::ScalePenWidth(2) + 2, COLOR_RED);
+  contest_pens[1].Create(Layout::ScalePenWidth(2) + 1, COLOR_ORANGE);
+  contest_pens[2].Create(Layout::ScalePenWidth(2), COLOR_BLUE);
 
   thermal_source_icon.LoadResource(IDB_THERMALSOURCE, IDB_THERMALSOURCE_HD);
 

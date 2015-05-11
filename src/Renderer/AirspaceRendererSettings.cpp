@@ -32,7 +32,7 @@ AirspaceClassRendererSettings::SetDefaults()
 #endif
   border_color = RGB8_RED;
   fill_color = RGB8_RED;
-  border_width = 2;
+  border_width = 4;
   fill_mode = FillMode::PADDING;
 }
 
