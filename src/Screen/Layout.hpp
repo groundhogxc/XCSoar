@@ -91,6 +91,14 @@ namespace Layout
    */
   void Initialize(PixelSize screen_size, unsigned ui_scale=100);
 
+
+  /**
+   * Initialize scale factors for line rendering etc.
+   *
+   * @param line_rendering_scale Global line width scale factor (in percent)
+   */
+  void InitializeScaleFactors(unsigned line_rendering_scale);
+
   /**
    * Is scaling supported by this platform?
    */

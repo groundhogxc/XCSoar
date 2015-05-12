@@ -214,6 +214,8 @@ MainWindow::InitialiseConfigured()
 
   PixelRect rc = GetClientRect();
 
+  Layout::InitializeScaleFactors(ui_settings.display.line_rendering_scale);
+
   const InfoBoxLayout::Layout ib_layout =
     InfoBoxLayout::Calculate(rc, ui_settings.info_boxes.geometry);
 
@@ -511,9 +513,11 @@ MainWindow::FullRedraw()
 void
 MainWindow::OnResize(PixelSize new_size)
 {
+  const UISettings &ui_settings = CommonInterface::GetUISettings();
   Layout::Initialize(new_size,
                      CommonInterface::GetUISettings().GetPercentScale());
-
+  Layout::InitializeScaleFactors(ui_settings.display.line_rendering_scale);
+  
   SingleWindow::OnResize(new_size);
 
   ReinitialiseLayout();
