@@ -245,9 +245,7 @@ LayoutConfigPanel::Save(bool &_changed)
               ui_settings.display.line_rendering_scale);
   changed |= line_rendering_scale_changed;
   if(line_rendering_scale_changed)
-    Layout::pen_width_scale =
-      std::max(1024u, Display::GetXDPI() * 1024u * ui_settings.display.line_rendering_scale >> 14);
-    //  "... >> 14" is optimized version of ... / 100u / 164u), using 164 PPI as reference
+    Layout::InitializeScaleFactors(ui_settings.display.line_rendering_scale);
 
   bool info_box_geometry_changed = false;
 

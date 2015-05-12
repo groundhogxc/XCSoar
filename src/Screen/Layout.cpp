@@ -132,3 +132,19 @@ Layout::Initialize(PixelSize new_size, unsigned ui_scale, unsigned custom_dpi)
 
   hit_radius = PtScale(HasTouchScreen() ? 24 : 6);
 }
+
+/**
+ * Initialize scale factors for line rendering etc.
+ *
+ * @param line_rendering_scale Global line width scale factor (in percent)
+ */
+void
+Layout::InitializeScaleFactors(unsigned line_rendering_scale)
+{
+  pen_width_scale =
+      std::max(1024u, Display::GetXDPI() * 1024u * line_rendering_scale  >> 14);
+  //  "... >> 14" is optimized version of ... / 100u / 164u), using 164 PPI as reference
+  fine_pen_width_scale = 
+      std::max(1024u, Display::GetXDPI() * 1024u * line_rendering_scale  >> 15);
+}
+
