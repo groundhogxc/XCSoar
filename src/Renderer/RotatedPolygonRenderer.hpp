@@ -28,44 +28,28 @@ Copyright_License {
 #include "Math/Angle.hpp"
 #include "Util/Macros.hpp"
 
-#ifdef ENABLE_OPENGL
-#include "Screen/OpenGL/CanvasRotateShift.hpp"
-#else
 #include "Math/Screen.hpp"
-#endif
 
 #include <algorithm>
 
 #include <assert.h>
 
 class RotatedPolygonRenderer {
-#ifdef ENABLE_OPENGL
-  const BulkPixelPoint *points;
-  CanvasRotateShift rotate_shift;
-#else
   BulkPixelPoint points[64];
-#endif
 
 public:
   RotatedPolygonRenderer(const BulkPixelPoint *src, unsigned n,
                          const PixelPoint pos, const Angle angle,
                          const unsigned scale=100)
-#ifdef ENABLE_OPENGL
-    :points(src), rotate_shift(pos, angle, scale)
-#endif
   {
-#ifndef ENABLE_OPENGL
     assert(n <= ARRAY_SIZE(points));
 
     std::copy_n(src, n, points);
     PolygonRotateShift(points, n, pos, angle, scale);
-#endif
   }
 
   void Draw(Canvas &canvas, unsigned start, unsigned n) const {
-#ifndef ENABLE_OPENGL
     assert(start + n <= ARRAY_SIZE(points));
-#endif
 
     canvas.DrawPolygon(points + start, n);
   }
