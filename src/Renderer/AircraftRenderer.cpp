@@ -28,6 +28,7 @@ Copyright_License {
 #include "MapSettings.hpp"
 #include "Asset.hpp"
 #include "Math/Angle.hpp"
+#include "Math/Screen.hpp"
 
 #include <algorithm>
 
@@ -45,7 +46,7 @@ DrawMirroredPolygon(const BulkPixelPoint *src, unsigned points,
     dst[2 * points - i - 1].y = dst[i].y;
   }
 #ifdef ENABLE_OPENGL
-  CanvasRotateShift rotate_shift(pos, angle, 50);
+  PolygonRotateShift(dst, 2 * points, pos, angle, 70);
 #else
   PolygonRotateShift(dst, 2 * points, pos, angle, 50);
 #endif
@@ -153,9 +154,13 @@ DrawSimpleAircraft(Canvas &canvas, const AircraftLook &look,
   const auto *Aircraft = large ? AircraftLarge : AircraftSmall;
   const unsigned AircraftPoints = large ?
                                   AIRCRAFT_POINTS_LARGE : AIRCRAFT_POINTS_SMALL;
-
+#ifdef ENABLE_OPENGL
   const RotatedPolygonRenderer renderer(Aircraft, AircraftPoints,
                                         aircraft_pos, angle);
+#else
+  const RotatedPolygonRenderer renderer(Aircraft, AircraftPoints,
+                                        aircraft_pos, angle, 140);
+#endif
 
   canvas.SelectHollowBrush();
   canvas.Select(look.aircraft_simple2_pen);
@@ -192,8 +197,14 @@ DrawHangGlider(Canvas &canvas, const AircraftLook &look,
     canvas.SelectBlackPen();
   }
 
+#ifdef ENABLE_OPENGL
   const RotatedPolygonRenderer renderer(aircraft, ARRAY_SIZE(aircraft),
                                         aircraft_pos, angle);
+#else
+  const RotatedPolygonRenderer renderer(aircraft, ARRAY_SIZE(aircraft),
+                                        aircraft_pos, angle, 140);
+#endif
+
   renderer.Draw(canvas, 0, ARRAY_SIZE(aircraft));
 }
 
@@ -222,8 +233,13 @@ DrawParaGlider(Canvas &canvas, const AircraftLook &look,
     {0, -3},
    };
 
+  #ifdef ENABLE_OPENGL
   const RotatedPolygonRenderer renderer(aircraft, ARRAY_SIZE(aircraft),
                                         aircraft_pos, angle);
+#else
+  const RotatedPolygonRenderer renderer(aircraft, ARRAY_SIZE(aircraft),
+                                        aircraft_pos, angle, 140);
+#endif
 
   if (inverse) {
     canvas.SelectBlackBrush();
