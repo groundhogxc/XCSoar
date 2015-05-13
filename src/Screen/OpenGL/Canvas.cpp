@@ -202,12 +202,22 @@ Canvas::DrawPolygon(const BulkPixelPoint *points, unsigned num_points)
     if (pen.GetWidthPixels() <= 2) {
       glDrawArrays(GL_LINE_LOOP, 0, num_points);
     } else {
+      pen.Unbind(); // Going to render the line as triangle strip, not as line
+      Pen penBuffer=pen; // remember pen and brush settings
+      Brush brushBuffer=brush;
+
+      SelectNullPen();  // Triangle strip has no outline
+      Select(Brush(penBuffer.GetColor())); // Strip polygon has line color
+      pen.Bind();
+      brush.Bind();
       unsigned vertices = LineToTriangles(points, num_points, vertex_buffer,
-                                          pen.GetWidthPixels(), true);
+                                          penBuffer.GetWidthPixels(), true);
       if (vertices > 0) {
         vp.Update(vertex_buffer.begin());
         glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices);
       }
+      pen=penBuffer;
+      brush=brushBuffer;
     }
 
     pen.Unbind();
