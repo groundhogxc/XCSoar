@@ -48,7 +48,11 @@ FlarmTrafficLook::Initialise(const TrafficLook &other, bool small, bool inverse)
   team_brush_yellow.Create(other.team_color_yellow);
   team_brush_magenta.Create(other.team_color_magenta);
 
+#ifdef ENABLE_OPENGL
+  unsigned width = small ? 2u : 4u;
+#else
   unsigned width = Layout::FastScale(small ? 1u : 2u);
+#endif
   warning_pen.Create(width, warning_color);
   alarm_pen.Create(width, alarm_color);
   default_pen.Create(width, default_color);
@@ -60,7 +64,7 @@ FlarmTrafficLook::Initialise(const TrafficLook &other, bool small, bool inverse)
   team_pen_magenta.Create(width, other.team_color_magenta);
 
   plane_pen.Create(width, radar_color);
-  radar_pen.Create(1, radar_color);
+  radar_pen.Create(small ? 1 : 2, radar_color);
 
   unit_fraction_pen.Create(1, inverse ? COLOR_WHITE : COLOR_BLACK);
 

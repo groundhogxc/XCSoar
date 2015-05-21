@@ -40,10 +40,11 @@ ThermalAssistantLook::Initialise(bool small, bool inverse)
   polygon_brush.Create(polygon_fill_color);
 #endif /* !OPENGL */
 
-  unsigned width = Layout::FastScale(small ? 1u : 2u);
 #ifdef ENABLE_OPENGL
+  unsigned width = Layout::FastScale(small ? 2u : 4u);
   polygon_pen.Create(width, polygon_border_color.WithAlpha(128));
 #else /* !OPENGL */
+  unsigned width = Layout::FastScale(small ? 1u : 2u);
   polygon_pen.Create(width, polygon_border_color);
 #endif /* !OPENGL */
   inner_circle_pen.Create(1, circle_color);
