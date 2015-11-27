@@ -33,8 +33,9 @@ Copyright_License {
 template<GLenum cap>
 class GLEnable {
 public:
-  GLEnable() {
-    ::glEnable(cap);
+  GLEnable(bool enable=true) {
+    if(enable)
+      ::glEnable(cap);
   }
 
   ~GLEnable() {
@@ -44,8 +45,10 @@ public:
 
 class GLBlend : public GLEnable<GL_BLEND> {
 public:
-  GLBlend(GLenum sfactor, GLenum dfactor) {
-    ::glBlendFunc(sfactor, dfactor);
+  GLBlend(GLenum sfactor, GLenum dfactor, bool enable=true)
+  :GLEnable<GL_BLEND>(enable){
+    if(enable)
+      ::glBlendFunc(sfactor, dfactor);
   }
 
 #ifndef HAVE_GLES1
@@ -62,7 +65,7 @@ public:
  */
 class ScopeAlphaBlend : GLBlend {
 public:
-  ScopeAlphaBlend():GLBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) {}
+  ScopeAlphaBlend(bool enable=true):GLBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) {}
 };
 
 class GLScissor : public GLEnable<GL_SCISSOR_TEST> {
