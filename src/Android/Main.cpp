@@ -167,7 +167,9 @@ Java_org_xcsoar_NativeView_initializeNative(JNIEnv *env, jobject obj,
   is_nook = StringIsEqual(native_view->GetProduct(), "NOOK");
   is_onyx_ebook = StringIsEqual(native_view->GetProduct(), "T68Lynx")
                   || StringIsEqual(native_view->GetProduct(), "T68")
-                  || StringIsEqual(native_view->GetProduct(), "T68ML");
+                  || StringIsEqual(native_view->GetProduct(), "T68ML")
+                  || StringIsEqual(native_view->GetProduct(), "I68ML")
+                  || StringIsEqual(native_view->GetProduct(), "I68MLPlus");
 #endif
 
   event_queue = new EventQueue();
