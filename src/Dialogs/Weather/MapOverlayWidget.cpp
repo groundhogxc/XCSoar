@@ -432,7 +432,7 @@ CreateWeatherMapOverlayWidget()
 {
   auto *list = new WeatherMapOverlayListWidget();
   auto *view = new ViewImageWidget();
-  auto *two = new TwoWidgets(list, view, false);
+  auto *two = new TwoWidgets(view, list, true);
   auto *buttons = new ButtonPanelWidget(two,
                                         ButtonPanelWidget::Alignment::BOTTOM);
   list->SetPreview(*view);
