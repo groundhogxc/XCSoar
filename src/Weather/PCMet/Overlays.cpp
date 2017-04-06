@@ -74,11 +74,13 @@ static_assert(ARRAY_SIZE(area_labels) == unsigned(PCMet::OverlayInfo::Area::COUN
 static void
 MakeOverlayLabel(PCMet::OverlayInfo &info)
 {
-  StaticString<64> label;
+  StaticString<64> label, run_filename;
+//  run_filename.assign(info.path.WithExtension(_T(".")).c_str());
   label.Format(_T("%s %s %um +%uh"),
                type_labels[unsigned(info.type)],
                area_labels[unsigned(info.area)],
                info.level,
+//               run_filename.c_str()+run_filename.length()-5,
                info.step);
   info.label = label;
 }
