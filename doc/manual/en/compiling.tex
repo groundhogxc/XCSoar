@@ -9,6 +9,11 @@ examples for Debian/Ubuntu.  A cross-compiler is used to build
 binaries for other operating systems (for example Android and
 Windows).
 
+\warning Important: The published developer manual PDF on the web site is usually the one for the current \emph{stable} version of \xc at the time of the most recent release, and therefore usually not fully up to date with the development branch.
+You should make sure you have the one built from the current sources.
+If you are not sure, then you should probably start by downloading the current source first and then compiling the manual from that (see section \ref{sec:compiling-manuals}), or check the source code of the developer manual itself (\texttt{compiling.tex} and \texttt{developsetuplinux.tex}).
+
+
 \section{Getting the Source Code}
 
 The XCSoar source code is managed with
@@ -354,7 +359,7 @@ To include kernel images in \texttt{KoboRoot.tgz}, copy
 \texttt{uImage.glohd}, \texttt{uImage.aura2} and \texttt{uImage.aura2.otg} to
 \texttt{/opt/kobo/kernel}.
 
-\subsection{Editing the Manuals}
+\subsection{Editing the Manuals}\ref{sec:compiling-manuals}
 
 The XCSoar documententation, including the Developer Manual that you are 
 reading right now, is written using the TeX markup language. You can edit
