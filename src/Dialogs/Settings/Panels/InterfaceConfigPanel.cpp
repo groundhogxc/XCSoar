@@ -24,6 +24,7 @@
 using namespace std::chrono;
 
 enum ControlIndex {
+  AntiAliasing,
   InputFile,
 #ifdef HAVE_NLS
   LanguageFile,
@@ -73,6 +74,21 @@ InterfaceConfigPanel::Prepare(ContainerWindow &parent,
   const UISettings &settings = CommonInterface::GetUISettings();
 
   RowFormWidget::Prepare(parent, rc);
+
+  WndProperty *wp_antialiasing = AddEnum(_("Anti-aliasing"),
+                                 _("Multi-sample anti-aliasing for smoother graphics. "
+                                   "Higher values improve quality but may reduce performance."));
+  if (wp_antialiasing != nullptr) {
+    DataFieldEnum &df = *(DataFieldEnum *)wp_antialiasing->GetDataField();
+    df.AddChoice(0, _("Off"));
+    df.AddChoice(2, _("2x"));
+    df.AddChoice(4, _("4x"));
+    df.AddChoice(8, _("8x"));
+    df.AddChoice(16, _("16x"));
+    df.SetValue(settings.antialiasing);
+    wp_antialiasing->RefreshDisplay();
+  }
+  SetExpertRow(AntiAliasing);
 
   AddFile(_("Events"),
           _("The Input Events file defines the menu system and how XCSoar responds to "
@@ -202,6 +218,10 @@ InterfaceConfigPanel::Save(bool &_changed) noexcept
 {
   UISettings &settings = CommonInterface::SetUISettings();
   bool changed = false;
+
+  if (SaveValueEnum(AntiAliasing, ProfileKeys::AntiAliasing,
+                    settings.antialiasing))
+    require_restart = changed = true;
 
   if (SaveValueFileReader(InputFile, ProfileKeys::InputFile))
     require_restart = changed = true;
