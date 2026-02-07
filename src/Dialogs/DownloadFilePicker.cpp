@@ -301,12 +301,7 @@ DownloadFilePickerWidget::Download()
 
   const auto &file = items[current];
   try {
-    AllocatedPath dest_dir;
-    if (file_type == FileType::RASP) {
-      dest_dir = AllocatedPath::Build("weather", "rasp");
-    } else if (file_type == FileType::MAP) {
-      dest_dir = AllocatedPath("maps");
-    }
+    AllocatedPath dest_dir = GetFileTypeDefaultDir(file_type);
 
     const Path file_path(file.GetName()); //AllocatedPath cannot take nullptr
 
