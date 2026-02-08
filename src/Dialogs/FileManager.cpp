@@ -245,7 +245,7 @@ protected:
   void UpdateFile();
   void Add();
   void Cancel();
-  void UpdateFiles();
+  void UpdateAllFiles();
 
 public:
   /* virtual methods from class Widget */
@@ -399,7 +399,7 @@ ManagedFileListWidget::CreateButtons(WidgetDialog &dialog) noexcept
     add_button = dialog.AddButton(_("Add"), [this](){ Add(); });
     cancel_button = dialog.AddButton(_("Abort"), [this](){ Cancel(); });
     update_button = dialog.AddButton(_("Update all"), [this](){
-      UpdateFiles();
+      UpdateAllFiles();
     });
   }
 #else
@@ -578,7 +578,7 @@ ManagedFileListWidget::Add()
 }
 
 void
-ManagedFileListWidget::UpdateFiles() {
+ManagedFileListWidget::UpdateAllFiles() {
 #ifdef HAVE_DOWNLOAD_MANAGER
   assert(Net::DownloadManager::IsAvailable());
 
