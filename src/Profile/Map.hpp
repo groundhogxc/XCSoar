@@ -182,6 +182,14 @@ public:
 
   void SetPath(std::string_view key, Path value) noexcept;
 
+  /**
+   * Update profile entries after a file has been moved.
+   * Replaces all occurrences of the contracted old path with the
+   * contracted new path in all profile values (handles both single
+   * and pipe-separated multi-path entries).
+   */
+  void MigrateFilePath(Path old_path, Path new_path) noexcept;
+
   // geo value
 
   /**

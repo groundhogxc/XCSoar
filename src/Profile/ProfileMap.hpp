@@ -13,6 +13,7 @@
 #include <tchar.h>
 
 class KeyValueFileWriter;
+class Path;
 
 namespace Profile {
 
@@ -132,6 +133,12 @@ Get(std::string_view key, BasicStringBuffer<TCHAR, max> &value) noexcept
 
 bool
 Exists(std::string_view key) noexcept;
+
+/**
+ * Update profile entries after a file has been moved.
+ */
+void
+MigrateFilePath(Path old_path, Path new_path) noexcept;
 
 void
 Clear() noexcept;
