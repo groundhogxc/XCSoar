@@ -11,6 +11,7 @@
 #include "Widget/ListWidget.hpp"
 #include "Language/Language.hpp"
 #include "LocalPath.hpp"
+#include "Profile/Profile.hpp"
 #include "system/FileUtil.hpp"
 #include "system/Path.hpp"
 #include "io/FileLineReader.hpp"
@@ -61,7 +62,19 @@ LocalPathByType(const AvailableFile &file)
   if (relative_path == nullptr)
     return nullptr;
 
-  return LocalPath(relative_path);
+  auto path = LocalPath(relative_path);
+  if (File::Exists(path))
+    return path;
+
+  /* fall back to root for files not yet migrated */
+  const UTF8ToWideConverter base(file.GetName());
+  if (base.IsValid()) {
+    auto legacy_path = LocalPath(Path(base));
+    if (File::Exists(legacy_path))
+      return legacy_path;
+  }
+
+  return path;
 }
 
 #ifdef HAVE_DOWNLOAD_MANAGER
@@ -111,25 +124,16 @@ class ManagedFileListWidget
     StaticString<64u> name;
     StaticString<32u> size;
     StaticString<32u> last_modified;
-    FileType type = FileType::UNKNOWN;
 
     bool downloading, failed, out_of_date;
 
     DownloadStatus download_status;
 
-    void Set(const TCHAR *_name, FileType _type, const DownloadStatus *_download_status,
+    void Set(const TCHAR *_name, const AllocatedPath &path,
+             const DownloadStatus *_download_status,
              bool _failed, bool _out_of_date) {
       name = _name;
-      type = _type;
 
-      const AllocatedPath subdir = GetFileTypeDefaultDir(type);
-      const AllocatedPath relative_path =
-        subdir == nullptr
-        ? AllocatedPath(name.c_str())
-        : AllocatedPath::Build(subdir, Path(name.c_str()));
-
-      const auto path = LocalPath(relative_path);
-      
       if (File::Exists(path)) {
         FormatByteSize(size.buffer(), size.capacity(),
                        File::GetSize(path));
@@ -402,7 +406,7 @@ ManagedFileListWidget::RefreshList()
 #endif
       }
 
-      items.append().Set(base.c_str(), i->type,
+      items.append().Set(base.c_str(), path,
                          is_downloading ? &download_status : nullptr,
                          HasFailed(remote_file), is_out_of_date);
     }
