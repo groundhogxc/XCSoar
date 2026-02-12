@@ -11,6 +11,7 @@
 #include "Widget/ListWidget.hpp"
 #include "Language/Language.hpp"
 #include "LocalPath.hpp"
+#include "Profile/Profile.hpp"
 #include "system/FileUtil.hpp"
 #include "system/Path.hpp"
 #include "io/FileLineReader.hpp"
@@ -39,18 +40,41 @@
 
 #include <cassert>
 
+[[gnu::pure]]
 static AllocatedPath
-LocalPathByType(const AvailableFile &file)
+GetRelativePathByType(const AvailableFile &file)
 {
   const UTF8ToWideConverter base(file.GetName());
   if (!base.IsValid())
     return nullptr;
 
   const AllocatedPath subdir = GetFileTypeDefaultDir(file.type);
-  const AllocatedPath path = (subdir == nullptr) ? 
-                                    AllocatedPath(base) : 
-                                    AllocatedPath::Build(subdir, Path(base));
-  return LocalPath(path);
+  if (subdir == nullptr)
+    return AllocatedPath(base);
+
+  return AllocatedPath::Build(subdir, Path(base));
+}
+
+static AllocatedPath
+LocalPathByType(const AvailableFile &file)
+{
+  const auto relative_path = GetRelativePathByType(file);
+  if (relative_path == nullptr)
+    return nullptr;
+
+  auto path = LocalPath(relative_path);
+  if (File::Exists(path))
+    return path;
+
+  /* fall back to root for files not yet migrated */
+  const UTF8ToWideConverter base(file.GetName());
+  if (base.IsValid()) {
+    auto legacy_path = LocalPath(Path(base));
+    if (File::Exists(legacy_path))
+      return legacy_path;
+  }
+
+  return path;
 }
 
 #ifdef HAVE_DOWNLOAD_MANAGER
@@ -100,22 +124,16 @@ class ManagedFileListWidget
     StaticString<64u> name;
     StaticString<32u> size;
     StaticString<32u> last_modified;
-    FileType type = FileType::UNKNOWN;
 
     bool downloading, failed, out_of_date;
 
     DownloadStatus download_status;
 
-    void Set(const TCHAR *_name, FileType _type, const DownloadStatus *_download_status,
+    void Set(const TCHAR *_name, const AllocatedPath &path,
+             const DownloadStatus *_download_status,
              bool _failed, bool _out_of_date) {
       name = _name;
-      type = _type;
 
-      AllocatedPath subdir = GetFileTypeDefaultDir(type);
-      AllocatedPath filename = (subdir == nullptr) ? AllocatedPath(name.c_str()) : 
-                                    AllocatedPath::Build(subdir, Path(name.c_str()));
-      const auto path = LocalPath(filename);
-      
       if (File::Exists(path)) {
         FormatByteSize(size.buffer(), size.capacity(),
                        File::GetSize(path));
@@ -388,7 +406,7 @@ ManagedFileListWidget::RefreshList()
 #endif
       }
 
-      items.append().Set(base.c_str(), i->type,
+      items.append().Set(base.c_str(), path,
                          is_downloading ? &download_status : nullptr,
                          HasFailed(remote_file), is_out_of_date);
     }
@@ -621,11 +639,11 @@ ManagedFileListWidget::UpdateAllFiles() {
       const AvailableFile *remote_file = FindRemoteFile(repository, file.name);
 
       if (remote_file != nullptr) {
-        const UTF8ToWideConverter base(remote_file->GetName());
-        if (!base.IsValid())
+        const auto relative_path = GetRelativePathByType(*remote_file);
+        if (relative_path == nullptr)
           return;
 
-        Net::DownloadManager::Enqueue(remote_file->GetURI(), Path(base));
+        Net::DownloadManager::Enqueue(remote_file->GetURI(), relative_path);
       }
     }
   }
@@ -645,6 +663,15 @@ ManagedFileListWidget::Cancel()
   assert(current < items.size());
 
   const FileItem &item = items[current];
+  const AvailableFile *remote_file = FindRemoteFile(repository, item.name);
+  if (remote_file != nullptr) {
+    if (const auto relative_path = GetRelativePathByType(*remote_file);
+        relative_path != nullptr) {
+      Net::DownloadManager::Cancel(relative_path);
+      return;
+    }
+  }
+
   Net::DownloadManager::Cancel(Path(item.name));
 #endif
 }
