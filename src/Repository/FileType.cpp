@@ -5,20 +5,102 @@
 #include "system/Path.hpp"
 #include "Compatibility/path.h"
 
+const char *
+GetFileTypePatterns(const FileType file_type) noexcept
+{
+  switch (file_type) {
+  case FileType::AIRSPACE:
+    return "*.txt\0*.air\0*.sua\0";
+
+  case FileType::WAYPOINT:
+    return "*.dat\0*.xcw\0*.cup\0*.wpz\0*.wpt\0";
+
+  case FileType::WAYPOINTDETAILS:
+    return "*.txt\0";
+
+  case FileType::MAP:
+    return "*.xcm\0*.lkm\0";
+
+  case FileType::FLARMNET:
+    return "*.fln\0";
+
+  case FileType::FLARMDB:
+    return "xcsoar-flarm.txt\0flarm-msg-data.csv\0";
+
+  case FileType::IGC:
+    return "*.igc\0";
+
+  case FileType::NMEA:
+    return "*.nmea\0";
+
+  case FileType::RASP:
+    return "*-rasp*.dat\0";
+
+  case FileType::XCI:
+    return "*.xci\0";
+
+  case FileType::TASK:
+    return "*.tsk\0*.cup\0*.igc\0";
+
+  case FileType::CHECKLIST:
+    return "*.xcc\0xcsoar-checklist.txt\0";
+
+  case FileType::PROFILE:
+    return "*.prf\0";
+
+  case FileType::PLANE:
+    return "*.xcp\0";
+
+  case FileType::UNKNOWN:
+  case FileType::COUNT:
+    return "\0";
+  }
+
+  return "\0";
+}
+
 AllocatedPath
 GetFileTypeDefaultDir(const FileType file_type)
 {
-  AllocatedPath dest_dir;
-  if (file_type == FileType::RASP) {
-    dest_dir = AllocatedPath::Build(_T("weather"), _T("rasp"));
-  } else if (file_type == FileType::MAP) {
-    dest_dir = AllocatedPath(_T("maps"));
-  } else if (file_type == FileType::AIRSPACE) {
-    dest_dir = AllocatedPath(_T("airspace"));
-  } else if (file_type == FileType::WAYPOINT) {
-    dest_dir = AllocatedPath(_T("waypoints"));
-  } else {
-    dest_dir = nullptr;
+  switch (file_type) {
+  case FileType::AIRSPACE:
+    return AllocatedPath(_T("airspace"));
+
+  case FileType::WAYPOINT:
+    return AllocatedPath(_T("waypoints"));
+
+  case FileType::WAYPOINTDETAILS:
+    return AllocatedPath::Build(_T("waypoints"), _T("details"));
+
+  case FileType::MAP:
+    return AllocatedPath(_T("maps"));
+
+  case FileType::FLARMDB:
+  case FileType::FLARMNET:
+    return AllocatedPath(_T("flarm"));
+
+  case FileType::RASP:
+    return AllocatedPath::Build(_T("weather"), _T("rasp"));
+
+  case FileType::XCI:
+    return AllocatedPath(_T("input"));
+
+  case FileType::TASK:
+    return AllocatedPath(_T("tasks"));
+
+  case FileType::CHECKLIST:
+    return AllocatedPath(_T("checklists"));
+
+  case FileType::IGC:
+  case FileType::NMEA:
+    return AllocatedPath(_T("logs"));
+
+  case FileType::PROFILE:
+  case FileType::PLANE:
+  case FileType::UNKNOWN:
+  case FileType::COUNT:
+    return nullptr;
   }
-  return dest_dir;
+
+  return nullptr;
 }
