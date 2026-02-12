@@ -514,6 +514,7 @@ XCSOAR_SOURCES := \
 	$(SRC)/ApplyVegaSwitches.cpp \
 	$(SRC)/MainWindow.cpp \
 	$(SRC)/Startup.cpp \
+	$(SRC)/MigrateDataFiles.cpp \
 	$(SRC)/Components.cpp \
 	$(SRC)/BackendComponents.cpp \
 	$(SRC)/DataComponents.cpp \
