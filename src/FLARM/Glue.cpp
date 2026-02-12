@@ -11,7 +11,8 @@
 #include "BackendComponents.hpp"
 #include "MergeThread.hpp"
 #include "LocalPath.hpp"
-#include "io/DataFile.hpp"
+#include "Repository/FileType.hpp"
+#include "io/FileReader.hxx"
 #include "io/Reader.hxx"
 #include "io/BufferedReader.hxx"
 #include "io/LineReader.hpp"
@@ -22,7 +23,31 @@
 #include "LogFile.hpp"
 #include "Profile/Profile.hpp"
 #include "Profile/Keys.hpp"
+#include "system/FileUtil.hpp"
 #include "time/PeriodClock.hpp"
+
+/**
+ * Return the local path to a FLARM data file inside the typed
+ * subdirectory.  If the file still sits in the data root (not
+ * yet migrated), move it into the subdirectory first — these
+ * are XCSoar-internal files, so relocating is safe.
+ */
+static AllocatedPath
+FlarmDataPath(const char *name) noexcept
+{
+  const auto subdir = GetFileTypeDefaultDir(FileType::FLARMDB);
+  auto path = LocalPath(AllocatedPath::Build(subdir, name));
+
+  if (!File::Exists(path)) {
+    auto root_path = LocalPath(name);
+    if (File::Exists(root_path)) {
+      MakeLocalPathRecursively(subdir, 10);
+      File::Rename(root_path, path);
+    }
+  }
+
+  return path;
+}
 
 /**
  * Loads the FLARMnet file
@@ -52,8 +77,9 @@ LoadSecondary(FlarmNameDatabase &db) noexcept
 try {
   LogString("OpenFLARMDetails");
 
-  auto reader = OpenDataFile("xcsoar-flarm.txt");
-  BufferedReader buffered_reader{*reader};
+  const auto path = FlarmDataPath("xcsoar-flarm.txt");
+  FileReader reader{path};
+  BufferedReader buffered_reader{reader};
   LoadFlarmNameFile(buffered_reader, db);
 } catch (...) {
   LogError(std::current_exception());
@@ -64,8 +90,9 @@ LoadFlarmMessagingData(FlarmMessagingDatabase &db) noexcept
 try {
   LogString("OpenFLARMMessages");
 
-  auto reader = OpenDataFile("flarm-msg-data.csv");
-  BufferedReader buffered_reader{*reader};
+  const auto path = FlarmDataPath("flarm-msg-data.csv");
+  FileReader reader{path};
+  BufferedReader buffered_reader{reader};
   unsigned num_records = LoadFlarmMessagingFile(buffered_reader, db);
   if (num_records > 0)
     LogFormat("%u FLARM messaging records found", num_records);
@@ -117,7 +144,10 @@ SaveFlarmColors() noexcept
 static void
 SaveSecondary(FlarmNameDatabase &flarm_names) noexcept
 try {
-  FileOutputStream fos(LocalPath("xcsoar-flarm.txt"));
+  const auto path = LocalPath(
+    AllocatedPath::Build(GetFileTypeDefaultDir(FileType::FLARMDB),
+                         "xcsoar-flarm.txt"));
+  FileOutputStream fos(path);
   BufferedOutputStream bos(fos);
   SaveFlarmNameFile(bos, flarm_names);
   bos.Flush();
@@ -129,7 +159,10 @@ try {
 static void
 SaveMessaging(FlarmMessagingDatabase &flarm_messages) noexcept
 try {
-  FileOutputStream fos(LocalPath("flarm-msg-data.csv"));
+  const auto path = LocalPath(
+    AllocatedPath::Build(GetFileTypeDefaultDir(FileType::FLARMDB),
+                         "flarm-msg-data.csv"));
+  FileOutputStream fos(path);
   BufferedOutputStream bos(fos);
   SaveFlarmMessagingFile(bos, flarm_messages);
   bos.Flush();
