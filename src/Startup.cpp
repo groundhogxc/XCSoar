@@ -55,6 +55,7 @@
 #include "CalculationThread.hpp"
 #include "Replay/Replay.hpp"
 #include "LocalPath.hpp"
+#include "MigrateDataFiles.hpp"
 #include "io/FileCache.hpp"
 #include "io/async/AsioThread.hpp"
 #include "io/async/GlobalAsioThread.hpp"
@@ -342,6 +343,9 @@ Startup(UI::Display &display)
 
   /* create XCSoarData on the first start */
   CreateDataPath();
+
+  /* move legacy root-level data files into typed subdirectories */
+  MigrateDataFiles();
 
 #ifdef ANDROID
   {
