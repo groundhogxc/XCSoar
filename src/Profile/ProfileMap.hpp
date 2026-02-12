@@ -11,6 +11,7 @@
 #include <string_view>
 
 class KeyValueFileWriter;
+class Path;
 
 namespace Profile {
 
@@ -130,6 +131,12 @@ Get(std::string_view key, BasicStringBuffer<char, max> &value) noexcept
 
 bool
 Exists(std::string_view key) noexcept;
+
+/**
+ * Update profile entries after a file has been moved.
+ */
+void
+MigrateFilePath(Path old_path, Path new_path) noexcept;
 
 void
 Clear() noexcept;

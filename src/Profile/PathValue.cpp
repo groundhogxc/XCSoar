@@ -9,6 +9,8 @@
 #include "util/StringCompare.hxx"
 #include "util/StringPointer.hxx"
 
+#include <algorithm>
+
 #ifdef HAVE_POSIX
 #include <fnmatch.h>
 #endif
@@ -119,5 +121,31 @@ ProfileMap::SetPath(std::string_view key, Path value) noexcept
       value = contracted;
 
     Set(key, value.c_str());
+  }
+}
+
+void
+ProfileMap::MigrateFilePath(Path old_path, Path new_path) noexcept
+{
+  const auto old_contracted = ContractLocalPath(old_path);
+  const auto new_contracted = ContractLocalPath(new_path);
+  if (old_contracted == nullptr || new_contracted == nullptr)
+    return;
+
+  const std::string old_str(old_contracted.c_str());
+  const std::string new_str(new_contracted.c_str());
+  if (old_str == new_str)
+    return;
+
+  for (auto &[key, value] : map) {
+    std::string::size_type pos = 0;
+    bool changed = false;
+    while ((pos = value.find(old_str, pos)) != std::string::npos) {
+      value.replace(pos, old_str.size(), new_str);
+      pos += new_str.size();
+      changed = true;
+    }
+    if (changed)
+      modified = true;
   }
 }

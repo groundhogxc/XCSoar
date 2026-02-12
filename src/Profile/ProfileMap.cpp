@@ -4,6 +4,7 @@
 #include "ProfileMap.hpp"
 #include "Current.hpp"
 #include "Map.hpp"
+#include "system/Path.hpp"
 
 bool
 Profile::IsModified() noexcept
@@ -106,6 +107,12 @@ bool
 Profile::Exists(std::string_view key) noexcept
 {
   return map.Exists(key);
+}
+
+void
+Profile::MigrateFilePath(Path old_path, Path new_path) noexcept
+{
+  map.MigrateFilePath(old_path, new_path);
 }
 
 void
