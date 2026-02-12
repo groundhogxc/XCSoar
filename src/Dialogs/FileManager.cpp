@@ -11,6 +11,7 @@
 #include "Widget/ListWidget.hpp"
 #include "Language/Language.hpp"
 #include "LocalPath.hpp"
+#include "Profile/Profile.hpp"
 #include "system/FileUtil.hpp"
 #include "system/Path.hpp"
 #include "io/FileLineReader.hpp"
@@ -125,18 +126,15 @@ class ManagedFileListWidget
     StaticString<64u> name;
     StaticString<32u> size;
     StaticString<32u> last_modified;
-    FileType type = FileType::UNKNOWN;
 
     bool downloading, failed, out_of_date;
 
     DownloadStatus download_status;
 
-    void Set(const char *_name, FileType _type, const DownloadStatus *_download_status,
+    void Set(const char *_name, const AllocatedPath &path,
+             const DownloadStatus *_download_status,
              bool _failed, bool _out_of_date) {
       name = _name;
-      type = _type;
-
-      const auto path = LocalPathByType(name, type);
       
       if (File::Exists(path)) {
         FormatByteSize(size.buffer(), size.capacity(),
@@ -409,7 +407,7 @@ ManagedFileListWidget::RefreshList()
 #endif
       }
 
-      items.append().Set(base.c_str(), i->type,
+      items.append().Set(base.c_str(), path,
                          is_downloading ? &download_status : nullptr,
                          HasFailed(remote_file), is_out_of_date);
     }
