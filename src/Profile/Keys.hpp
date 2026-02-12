@@ -300,4 +300,6 @@ constexpr std::string_view DisclaimerAcknowledgedVersion =
   "DisclaimerAcknowledgedVersion";
 constexpr std::string_view LastSeenNewsVersion =
   "LastSeenNewsVersion";
+
+constexpr std::string_view DataDirVersion = "DataDirVersion";
 }
