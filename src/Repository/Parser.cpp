@@ -4,6 +4,7 @@
 #include "Parser.hpp"
 #include "FileRepository.hpp"
 #include "io/LineReader.hpp"
+#include "system/Path.hpp"
 #include "util/StringStrip.hxx"
 #include "util/HexString.hpp"
 
@@ -39,6 +40,12 @@ Commit(FileRepository &repository, AvailableFile &file)
     return true;
 
   if (!file.IsValid())
+    return false;
+
+  /* reject names with directory traversal or separators — the name
+     field should be a plain filename, not a path */
+  const Path name{file.name.c_str()};
+  if (!name.IsBase() || name.HasPathTraversal())
     return false;
 
   repository.files.emplace_back(std::move(file));

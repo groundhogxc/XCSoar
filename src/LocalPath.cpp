@@ -101,6 +101,11 @@ LocalPath(Path file) noexcept
 {
   assert(file != nullptr);
 
+  /* reject absolute paths and directory traversal to ensure the
+     resolved destination always remains inside the data path */
+  if (file.IsAbsolute() || file.HasPathTraversal())
+    return nullptr;
+
   return AllocatedPath::Build(GetPrimaryDataPath(), file);
 }
 
@@ -120,6 +125,9 @@ AllocatedPath
 MakeLocalPath(Path name)
 {
   auto path = LocalPath(name);
+  if (path == nullptr)
+    return nullptr;
+
   Directory::Create(path);
   return path;
 }
@@ -131,6 +139,8 @@ MakeLocalPathRecursively(Path name, int max_creation_depth)
   assert(max_creation_depth >= 0);
 
   AllocatedPath path = LocalPath(name);
+  if (path == nullptr)
+    return nullptr;
 
   if (Directory::Exists(path))
     return path;
