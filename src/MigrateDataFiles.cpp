@@ -126,6 +126,9 @@ MigrateDataFiles() noexcept
       Directory::VisitSpecificFiles(root, pattern, visitor, false);
 
       for (const auto &[old_path, filename] : matches) {
+        if (!filename.IsValidFilename())
+          continue;
+
         /* if the repository knows this file under a different type,
            skip it here — it will be handled when we iterate that
            type's patterns instead */
