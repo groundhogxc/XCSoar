@@ -68,6 +68,13 @@ static constexpr Color COLOR_AIRSPACE_WARNING_INSIDE_ACK =
   Color(254, 100, 100);
 static constexpr Color COLOR_AIRSPACE_WARNING_NEAR_ACK =
   Color(254, 254, 100);
+static constexpr Color COLOR_AIRSPACE_WARNING_CLEARED =
+  Color(50, 200, 50);
+
+/**
+ * Dark green text color for airspaces with ATC clearance.
+ */
+static constexpr Color COLOR_CLEARANCE = Color(0x00, 0x80, 0x00);
 
 /**
  * XCTherm overlay palette.
