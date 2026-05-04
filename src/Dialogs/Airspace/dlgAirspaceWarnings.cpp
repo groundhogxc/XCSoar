@@ -433,7 +433,7 @@ AirspaceWarningListWidget::OnPaintItem(Canvas &canvas,
     text_altitude_rc.VerticalSplit(text_altitude_rc.right - (padding + altitude_width)).first;
   text_rc.right -= padding;
 
-  if (warning.IsCleared())
+  if (warning.IsCleared() || warning.IsCoveredByClearance())
     canvas.SetTextColor(COLOR_CLEARANCE);
   else if (!warning.IsActive())
     canvas.SetTextColor(COLOR_GRAY);
@@ -491,6 +491,15 @@ AirspaceWarningListWidget::OnPaintItem(Canvas &canvas,
       status.kind = AirspaceWarningStatusBadge::Kind::ClearedNear;
     else
       status.kind = AirspaceWarningStatusBadge::Kind::Cleared;
+  } else if (warning.IsCoveredByClearance()) {
+    /* suppressed by another airspace's clearance: info only, not a
+       warning */
+    if (warning.IsInside())
+      status.kind = AirspaceWarningStatusBadge::Kind::CoveredInside;
+    else if (warning.IsWarning())
+      status.kind = AirspaceWarningStatusBadge::Kind::CoveredNear;
+    else
+      status.kind = AirspaceWarningStatusBadge::Kind::Covered;
   } else if (warning.IsWarning()) {
     status.kind = warning.IsInside()
       ? AirspaceWarningStatusBadge::Kind::Inside
