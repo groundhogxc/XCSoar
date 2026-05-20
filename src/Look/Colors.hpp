@@ -68,8 +68,13 @@ static constexpr Color COLOR_AIRSPACE_WARNING_INSIDE_ACK =
   Color(254, 100, 100);
 static constexpr Color COLOR_AIRSPACE_WARNING_NEAR_ACK =
   Color(254, 254, 100);
-static constexpr Color COLOR_AIRSPACE_WARNING_CLEARED =
-  Color(50, 200, 50);
+
+/**
+ * Background colour used by the airspace warning list and the
+ * "currently inside" widget to mark a row whose warning is suppressed
+ * by clearance (or whose clearance is set).
+ */
+static constexpr Color COLOR_AIRSPACE_CLEARED = Color(50, 200, 50);
 
 /**
  * Dark green text color for airspaces with ATC clearance.

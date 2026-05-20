@@ -54,32 +54,32 @@ DrawAirspaceWarningStatus(Canvas &canvas, const Font &font,
     break;
 
   case AirspaceWarningStatusBadge::Kind::ClearedInside:
-    state_color = COLOR_AIRSPACE_WARNING_CLEARED;
+    state_color = COLOR_AIRSPACE_CLEARED;
     state_text = _("(Inside)");
     break;
 
   case AirspaceWarningStatusBadge::Kind::ClearedNear:
-    state_color = COLOR_AIRSPACE_WARNING_CLEARED;
+    state_color = COLOR_AIRSPACE_CLEARED;
     state_text = _("(Near)");
     break;
 
   case AirspaceWarningStatusBadge::Kind::Cleared:
-    state_color = COLOR_AIRSPACE_WARNING_CLEARED;
+    state_color = COLOR_AIRSPACE_CLEARED;
     state_text = _("Cleared");
     break;
 
   case AirspaceWarningStatusBadge::Kind::CoveredInside:
-    state_color = COLOR_AIRSPACE_WARNING_CLEARED;
+    state_color = COLOR_AIRSPACE_CLEARED;
     state_text = _("(Inside)");
     break;
 
   case AirspaceWarningStatusBadge::Kind::CoveredNear:
-    state_color = COLOR_AIRSPACE_WARNING_CLEARED;
+    state_color = COLOR_AIRSPACE_CLEARED;
     state_text = _("(Near)");
     break;
 
   case AirspaceWarningStatusBadge::Kind::Covered:
-    state_color = COLOR_AIRSPACE_WARNING_CLEARED;
+    state_color = COLOR_AIRSPACE_CLEARED;
     state_text = _("Covered");
     break;
 
