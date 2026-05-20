@@ -2,6 +2,7 @@
 // Copyright The XCSoar Project
 
 #include "AirspaceWarningMonitor.hpp"
+#include "CurrentAirspacesWidget.hpp"
 #include "Interface.hpp"
 #include "Asset.hpp"
 #include "Audio/Sound.hpp"
@@ -22,6 +23,7 @@
 #include "Airspace/ProtectedAirspaceWarningManager.hpp"
 #include "Formatter/TimeFormatter.hpp"
 #include "Formatter/UserUnits.hpp"
+#include "util/StaticString.hxx"
 #include "Components.hpp"
 #include "BackendComponents.hpp"
 #include "LogFile.hpp"
@@ -30,6 +32,8 @@
 
 #include <exception>
 #include <algorithm>
+
+#include <array>
 
 class AirspaceWarningWidget final
   : public QuestionWidget {
@@ -207,8 +211,8 @@ public:
   }
 
   ~AirspaceWarningWidget() noexcept {
-    assert(monitor.widget == this);
-    monitor.widget = nullptr;
+    assert(monitor.warning_widget == this);
+    monitor.warning_widget = nullptr;
   }
 
   /* virtual methods from class Widget */
@@ -302,7 +306,7 @@ AirspaceWarningMonitor::PlayRepetitiveSound() noexcept
 void
 AirspaceWarningMonitor::HideWidget() noexcept
 {
-  if (widget == nullptr)
+  if (warning_widget == nullptr && current_widget == nullptr)
     return;
 
   PageActions::RestoreBottom();
@@ -313,7 +317,8 @@ AirspaceWarningMonitor::Check() noexcept
 {
   const auto &calculated = CommonInterface::Calculated();
 
-  if (widget == nullptr && calculated.airspace_warnings.latest == last)
+  if (warning_widget == nullptr && current_widget == nullptr
+      && calculated.airspace_warnings.latest == last)
     return;
 
   /* there's a new airspace warning */
@@ -349,33 +354,66 @@ AirspaceWarningMonitor::Check() noexcept
 
   const auto w = airspace_warnings->GetTopWarning();
 
-  if (!w || !w->IsActive()) {
+  if (w && w->IsActive()) {
+    if (!CommonInterface::GetUISettings().enable_airspace_warning_dialog)
+      return;
+
+    if (current_widget != nullptr) {
+      PageActions::RestoreBottom();  // Airspace warning takes precedence
+      assert(current_widget == nullptr);
+    }
+
+    if (warning_widget != nullptr) {
+      if (warning_widget->Update(w->GetAirspace(), w->GetWarningState(),
+                                 w->GetSolution()))
+        return;
+
+      PageActions::RestoreBottom();
+      assert(warning_widget == nullptr);
+    }
+
+    warning_widget = new AirspaceWarningWidget(*this, *airspace_warnings,
+                                               w->GetAirspacePtr(),
+                                               w->GetWarningState(),
+                                               w->GetSolution());
+    PageActions::SetCustomBottom(warning_widget);
+
+    // un-blank the display, play a sound
+    ResetUserIdle();
+    PlayResource("IDR_WAV_BEEPBWEEP");
+    sound_interval_counter = 0;
+    sound_timer.Schedule(std::chrono::milliseconds(500));
+    return;
+  }
+
+  // No active warning — check for suppressed inside warnings
+
+  std::array<CurrentAirspacesWidget::Entry, 2> entries;
+  const unsigned n = CurrentAirspacesWidget::CollectEntries(*airspace_warnings,
+                                                            entries);
+
+  if (n == 0) {
     HideWidget();
     return;
   }
 
-  if (CommonInterface::GetUISettings().enable_airspace_warning_dialog) {
-    /* show airspace warning */
-    if (widget != nullptr) {
-      if (widget->Update(w->GetAirspace(), w->GetWarningState(),
-                         w->GetSolution()))
-        return;
-
-      HideWidget();
-    }
-
-    widget = new AirspaceWarningWidget(*this, *airspace_warnings,
-                                       w->GetAirspacePtr(),
-                                       w->GetWarningState(),
-                                       w->GetSolution());
-    PageActions::SetCustomBottom(widget);
+  if (warning_widget != nullptr) {
+    PageActions::RestoreBottom();
+    assert(warning_widget == nullptr);
   }
 
-  // un-blank the display, play a sound
-  ResetUserIdle();
-  PlayResource("IDR_WAV_BEEPBWEEP");
-  if (CommonInterface::GetUISettings().enable_airspace_warning_dialog) {
-    sound_interval_counter = 0;
-    sound_timer.Schedule(std::chrono::milliseconds(500));
+  const std::span<const CurrentAirspacesWidget::Entry> entries_span{
+    entries.data(), n};
+
+  if (current_widget != nullptr) {
+    if (current_widget->Matches(entries_span))
+      return;
+
+    PageActions::RestoreBottom();
+    assert(current_widget == nullptr);
   }
+
+  current_widget = new CurrentAirspacesWidget(*this, *airspace_warnings,
+                                              entries_span);
+  PageActions::SetCustomBottom(current_widget);
 }
