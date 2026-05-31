@@ -3,6 +3,7 @@
 
 #include "Airspace.hpp"
 #include "Dialogs/WidgetDialog.hpp"
+#include "Dialogs/HelpDialog.hpp"
 #include "Widget/ListWidget.hpp"
 #include "Widget/WindowWidget.hpp"
 #include "Profile/Current.hpp"
@@ -565,6 +566,17 @@ dlgAirspaceShowModal(bool color_mode)
                       UIGlobals::GetDialogLook(),
                       _("Airspace"));
   dialog.AddButton(_("Close"), mrOK);
+  dialog.AddButton(_("Help"), [](){
+    HelpDialog(_("Airspace"),
+               _("Per-class filter settings. For airspaces where both\n"
+                 "type (CTR, FIR, ...) and class are given, the type\n"
+                 "takes precedence over class in XCSoar.\n"
+                 "Columns:\n"
+                 "  Show  - draw airspaces of this class on the map\n"
+                 "  Warn  - enable warnings when approaching / inside\n"
+                 "  Clrnc - allow granting a clearance to suppress\n"
+                 "           warnings from other overlapping airspaces"));
+  });
   dialog.FinishPreliminary(std::move(pair));
   dialog.ShowModal();
 
