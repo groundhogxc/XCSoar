@@ -202,7 +202,15 @@ public:
       CommonInterface::GetComputerSettings().airspace.warnings;
     if (warning_config.IsClassClearanceAllowed(airspace->GetTypeOrClass()))
       AddButton(_("Clearance"), [this](){
-        manager.SetCleared(airspace);
+        try {
+          manager.SetCleared(airspace);
+        } catch (...) {
+          LogError(std::current_exception(),
+                   "Failed to update airspace clearance");
+          Message::AddMessage(_("Failed to update airspace clearance"));
+          return;
+        }
+
         monitor.Schedule();
         PageActions::RestoreBottom();
       });

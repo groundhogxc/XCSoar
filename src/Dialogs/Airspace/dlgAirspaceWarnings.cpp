@@ -310,7 +310,19 @@ AirspaceWarningListWidget::SetClearance()
 {
   const auto &airspace = selected_airspace;
   if (airspace != NULL) {
-    airspace_warnings.SetCleared(airspace, true);
+    try {
+      airspace_warnings.SetCleared(airspace, true);
+    } catch (const std::exception &e) {
+      LogFmt("Failed to update airspace clearance: {}", e.what());
+      Message::AddMessage(_("Failed to update airspace clearance"));
+      return;
+    } catch (...) {
+      LogError(std::current_exception(),
+               "Failed to update airspace clearance");
+      Message::AddMessage(_("Failed to update airspace clearance"));
+      return;
+    }
+
     UpdateList();
   }
 }
@@ -320,7 +332,19 @@ AirspaceWarningListWidget::RevokeClearance()
 {
   const auto &airspace = selected_airspace;
   if (airspace != NULL) {
-    airspace_warnings.SetCleared(airspace, false);
+    try {
+      airspace_warnings.SetCleared(airspace, false);
+    } catch (const std::exception &e) {
+      LogFmt("Failed to update airspace clearance: {}", e.what());
+      Message::AddMessage(_("Failed to update airspace clearance"));
+      return;
+    } catch (...) {
+      LogError(std::current_exception(),
+               "Failed to update airspace clearance");
+      Message::AddMessage(_("Failed to update airspace clearance"));
+      return;
+    }
+
     UpdateList();
   }
 }

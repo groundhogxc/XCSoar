@@ -668,8 +668,18 @@ MapItemListWidget::OnSetClearanceClicked()
 {
   const AirspaceMapItem &as_item = *(const AirspaceMapItem *)
     list[GetCursorIndex()];
-  backend_components->GetAirspaceWarnings()->SetCleared(
-    as_item.airspace, true);
+  try {
+    backend_components->GetAirspaceWarnings()->SetCleared(
+      as_item.airspace, true);
+  } catch (const std::exception &e) {
+    LogFmt("Failed to update airspace clearance: {}", e.what());
+    Message::AddMessage(_("Failed to update airspace clearance"));
+    return;
+  } catch (...) {
+    LogError(std::current_exception(), "Failed to update airspace clearance");
+    Message::AddMessage(_("Failed to update airspace clearance"));
+    return;
+  }
   UpdateButtons();
 }
 
@@ -678,8 +688,18 @@ MapItemListWidget::OnRevokeClearanceClicked()
 {
   const AirspaceMapItem &as_item = *(const AirspaceMapItem *)
     list[GetCursorIndex()];
-  backend_components->GetAirspaceWarnings()->SetCleared(
-    as_item.airspace, false);
+  try {
+    backend_components->GetAirspaceWarnings()->SetCleared(
+      as_item.airspace, false);
+  } catch (const std::exception &e) {
+    LogFmt("Failed to update airspace clearance: {}", e.what());
+    Message::AddMessage(_("Failed to update airspace clearance"));
+    return;
+  } catch (...) {
+    LogError(std::current_exception(), "Failed to update airspace clearance");
+    Message::AddMessage(_("Failed to update airspace clearance"));
+    return;
+  }
   UpdateButtons();
 }
 
