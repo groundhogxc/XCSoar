@@ -108,6 +108,16 @@ enum class WindArrowStyle: uint8_t {
   NO_ARROW,
 };
 
+/** Settings for the GeoTIFF map overlay layer. */
+struct OverlayImageSettings {
+  /** Opacity in percent (0..100). */
+  unsigned opacity;
+
+  void SetDefaults() noexcept {
+    opacity = 50;
+  }
+};
+
 struct MapSettings {
   /** Map zooms in on circling */
   bool circle_zoom_enabled;
@@ -200,6 +210,9 @@ struct MapSettings {
 
   /** Density of contour lines drawn on the RASP weather overlay */
   ContourDensity rasp_contour_density;
+
+  /** GeoTIFF map overlay layer */
+  OverlayImageSettings overlay;
 
   void SetDefaults() noexcept;
 };
