@@ -22,7 +22,9 @@ $(eval $(call pkg-config-library,LIBTIFF,libtiff-4))
 LIBTIFF_CPPFLAGS += -DUSE_LIBTIFF
 
 ifeq ($(GEOTIFF),y)
-LIBTIFF_CPPFLAGS += -DUSE_GEOTIFF
+# USE_GEOTIFF must be consistent across all translation units, or
+# conditional declarations become inconsistent (crashes at runtime).
+TARGET_CPPFLAGS += -DUSE_GEOTIFF
 LIBGEOTIFF_USE_PKG_CONFIG := y
 LIBGEOTIFF_LDLIBS = -lgeotiff
 
