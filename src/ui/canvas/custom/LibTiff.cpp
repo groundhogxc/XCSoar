@@ -17,6 +17,10 @@
 #include "system/UTF8Win32.hpp"
 #endif
 
+#ifdef ENABLE_OPENGL
+#include "ui/canvas/opengl/Globals.hpp"
+#endif
+
 #ifdef USE_GEOTIFF
 #include "Geo/Quadrilateral.hpp"
 #include "Geo/GeoTIFFHeaders.hpp"
@@ -158,7 +162,13 @@ BilinearUpscale(UncompressedImage &&src, unsigned scale)
 static UncompressedImage
 LoadTiff(TIFFRGBAImage &img)
 {
-  if (img.width > 8192 || img.height > 8192)
+#ifdef ENABLE_OPENGL
+  const unsigned max_size = OpenGL::max_texture_size;
+#else
+  constexpr unsigned max_size = 8192;
+#endif
+
+  if (img.width > max_size || img.height > max_size)
     throw std::runtime_error("TIFF file is too large");
 
   std::unique_ptr<uint8_t[]> data(new uint8_t[img.width * img.height * 4]);
