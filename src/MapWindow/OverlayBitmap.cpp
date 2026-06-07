@@ -6,6 +6,7 @@
 #include "ui/canvas/opengl/Texture.hpp"
 #include "ui/canvas/opengl/Scope.hpp"
 #include "ui/canvas/opengl/ConstantAlpha.hpp"
+#include "MapSettings.hpp"
 #include "ui/canvas/opengl/VertexPointer.hpp"
 #include "Projection/WindowProjection.hpp"
 #include "Math/Point2D.hpp"
@@ -162,82 +163,86 @@ MapOverlayBitmap::Draw([[maybe_unused]] Canvas &canvas,
 
   texture.Bind();
 
-  const ScopeTextureConstantAlpha blend(use_bitmap_alpha, alpha);
-
   glEnableVertexAttribArray(OpenGL::Attribute::TEXCOORD);
   glVertexAttribPointer(OpenGL::Attribute::TEXCOORD, 2, GL_FLOAT, GL_FALSE,
                         0, coord);
 
-  if (texture.GetWidth() > 512 || texture.GetHeight() > 512) {
-    const unsigned x_steps = std::clamp((texture.GetWidth() + 127u) / 128u,
-                                        1u, 32u);
-    const unsigned y_steps = std::clamp((texture.GetHeight() + 127u) / 128u,
-                                        1u, 32u);
+  const auto draw_geometry = [&]() {
+    if (texture.GetWidth() > 512 || texture.GetHeight() > 512) {
+      const unsigned x_steps = std::clamp((texture.GetWidth() + 127u) / 128u,
+                                          1u, 32u);
+      const unsigned y_steps = std::clamp((texture.GetHeight() + 127u) / 128u,
+                                          1u, 32u);
 
-    for (unsigned y = 0; y < y_steps; ++y) {
-      const double v0 = double(y) / y_steps;
-      const double v1 = double(y + 1) / y_steps;
+      for (unsigned y = 0; y < y_steps; ++y) {
+        const double v0 = double(y) / y_steps;
+        const double v1 = double(y + 1) / y_steps;
 
-      for (unsigned x = 0; x < x_steps; ++x) {
-        const double u0 = double(x) / x_steps;
-        const double u1 = double(x + 1) / x_steps;
+        for (unsigned x = 0; x < x_steps; ++x) {
+          const double u0 = double(x) / x_steps;
+          const double u1 = double(x + 1) / x_steps;
 
-        const auto cell = SliceQuadrilateral(bounds, u0, v0, u1, v1);
-        if (!cell.GetBounds().Overlaps(screen_bounds))
-          continue;
+          const auto cell = SliceQuadrilateral(bounds, u0, v0, u1, v1);
+          if (!cell.GetBounds().Overlaps(screen_bounds))
+            continue;
 
-        const GeoPoint geo[4] = {
-          cell.top_left,
-          cell.top_right,
-          cell.bottom_right,
-          cell.bottom_left,
-        };
-        const double uv[4][2] = {
-          {u0, v0},
-          {u1, v0},
-          {u1, v1},
-          {u0, v1},
-        };
+          const GeoPoint geo[4] = {
+            cell.top_left,
+            cell.top_right,
+            cell.bottom_right,
+            cell.bottom_left,
+          };
+          const double uv[4][2] = {
+            {u0, v0},
+            {u1, v0},
+            {u1, v1},
+            {u0, v1},
+          };
 
-        for (unsigned i = 0; i < 4; ++i) {
-          coord[i].x = uv[i][0] * x_factor;
-          coord[i].y = (bitmap.IsFlipped() ? 1 - uv[i][1] : uv[i][1]) * y_factor;
+          for (unsigned i = 0; i < 4; ++i) {
+            coord[i].x = uv[i][0] * x_factor;
+            coord[i].y = (bitmap.IsFlipped() ? 1 - uv[i][1] : uv[i][1])
+              * y_factor;
 
-          vertices[i] = projection.GeoToScreen(geo[i]);
+            vertices[i] = projection.GeoToScreen(geo[i]);
+          }
+
+          glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
         }
-
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
       }
+
+      return;
     }
 
-    glDisableVertexAttribArray(OpenGL::Attribute::TEXCOORD);
-    return;
-  }
+    const auto clipped = Clip(bounds, screen_bounds);
 
-  auto clipped = Clip(bounds, screen_bounds);
-  if (clipped.empty()) {
-    glDisableVertexAttribArray(OpenGL::Attribute::TEXCOORD);
-    return;
-  }
+    for (const auto &polygon : clipped) {
+      const auto &ring = polygon.outer();
 
-  for (const auto &polygon : clipped) {
-    const auto &ring = polygon.outer();
+      size_t n = ring.size();
+      if (ring.front() == ring.back())
+        --n;
 
-    size_t n = ring.size();
-    if (ring.front() == ring.back())
-      --n;
+      for (size_t i = 0; i < n; ++i) {
+        const auto v = GeoFrom2D(ring[i]);
 
-    for (size_t i = 0; i < n; ++i) {
-      const auto v = GeoFrom2D(ring[i]);
+        auto p = MapInQuadrilateral(bounds, v);
+        coord[i].x = p.x * x_factor;
+        coord[i].y = (bitmap.IsFlipped() ? 1 - p.y : p.y) * y_factor;
 
-      auto p = MapInQuadrilateral(bounds, v);
-      coord[i].x = p.x * x_factor;
-      coord[i].y = (bitmap.IsFlipped() ? 1 - p.y : p.y) * y_factor;
+        vertices[i] = projection.GeoToScreen(v);
+      }
 
-      vertices[i] = projection.GeoToScreen(v);
+      glDrawArrays(GL_TRIANGLE_FAN, 0, n);
     }
+  };
 
-    glDrawArrays(GL_TRIANGLE_FAN, 0, n);
+  if (blend_mode == MapOverlayBlendMode::ADD) {
+    const ScopeTextureMultiplyAlpha blend(alpha);
+    draw_geometry();
+  } else {
+    const ScopeTextureConstantAlpha blend(use_bitmap_alpha, alpha);
+    draw_geometry();
   }
 
   glDisableVertexAttribArray(OpenGL::Attribute::TEXCOORD);
