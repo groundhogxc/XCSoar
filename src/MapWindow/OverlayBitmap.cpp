@@ -157,66 +157,133 @@ MapOverlayBitmap::Draw([[maybe_unused]] Canvas &canvas,
   const PixelSize allocated = texture.GetAllocatedSize();
   const double x_factor = double(texture.GetWidth()) / allocated.width;
   const double y_factor = double(texture.GetHeight()) / allocated.height;
+  const bool flipped = bitmap.IsFlipped();
 
-  Point2D<GLfloat> coord[16];
-  BulkPixelPoint vertices[16];
+  /* Map a relative raster position (u,v in 0..1, from the top-left) to a
+     texture coordinate. Accounts for the power-of-two padding-
+     and image flipping. The result is clamped to the initialised
+     region when padded. */
+  const auto texcoord = [x_factor, y_factor, flipped](double u, double v) {
+    double tx = u * x_factor;
+    double ty = v * y_factor;
+    if (flipped)
+      ty = y_factor - ty;
 
-  const ScopeVertexPointer vp(vertices);
+    Point2D<GLfloat> c;
+    c.x = std::clamp(tx, 0.0, double(x_factor));
+    c.y = std::clamp(ty, 0.0, double(y_factor));
+    return c;
+  };
 
   texture.Bind();
-
   glEnableVertexAttribArray(OpenGL::Attribute::TEXCOORD);
-  glVertexAttribPointer(OpenGL::Attribute::TEXCOORD, 2, GL_FLOAT, GL_FALSE,
-                        0, coord);
 
-  const auto draw_geometry = [&]() {
-    if (texture.GetWidth() > 512 || texture.GetHeight() > 512) {
-      const unsigned x_steps = std::clamp((texture.GetWidth() + 127u) / 128u,
-                                          1u, 32u);
-      const unsigned y_steps = std::clamp((texture.GetHeight() + 127u) / 128u,
-                                          1u, 32u);
+  /* Curved-projection overlays carry a subdivision mesh. In that
+     case, draw it cell by cell, each node textured with its exact
+     texture coordinate and positioned by its own GeoToScreen(). */
+  const auto draw_mesh = [&]() {
+    Point2D<GLfloat> coord[4];
+    BulkPixelPoint vertices[4]{};
+    const ScopeVertexPointer vp(vertices);
+    glVertexAttribPointer(OpenGL::Attribute::TEXCOORD, 2, GL_FLOAT, GL_FALSE,
+                          0, coord);
 
-      for (unsigned y = 0; y < y_steps; ++y) {
-        const double v0 = double(y) / y_steps;
-        const double v1 = double(y + 1) / y_steps;
+    const unsigned nx = grid.nx, ny = grid.ny;
+    for (unsigned j = 0; j < ny; ++j) {
+      for (unsigned i = 0; i < nx; ++i) {
+        const GeoPoint tl = grid.At(i, j), tr = grid.At(i + 1, j);
+        const GeoPoint bl = grid.At(i, j + 1), br = grid.At(i + 1, j + 1);
 
-        for (unsigned x = 0; x < x_steps; ++x) {
-          const double u0 = double(x) / x_steps;
-          const double u1 = double(x + 1) / x_steps;
+        /* skip cells that are entirely off-screen */
+        GeoBounds cell = GeoBounds::Invalid();
+        cell.Extend(tl);
+        cell.Extend(tr);
+        cell.Extend(bl);
+        cell.Extend(br);
+        if (!cell.Overlaps(screen_bounds))
+          continue;
 
-          const auto cell = SliceQuadrilateral(bounds, u0, v0, u1, v1);
-          if (!cell.GetBounds().Overlaps(screen_bounds))
-            continue;
+        const double u0 = double(i) / nx, u1 = double(i + 1) / nx;
+        const double v0 = double(j) / ny, v1 = double(j + 1) / ny;
 
-          const GeoPoint geo[4] = {
-            cell.top_left,
-            cell.top_right,
-            cell.bottom_right,
-            cell.bottom_left,
-          };
-          const double uv[4][2] = {
-            {u0, v0},
-            {u1, v0},
-            {u1, v1},
-            {u0, v1},
-          };
+        /* GL_TRIANGLE_STRIP order: top-left, top-right, bottom-left,
+           bottom-right */
+        coord[0] = texcoord(u0, v0);
+        vertices[0] = projection.GeoToScreen(tl);
+        coord[1] = texcoord(u1, v0);
+        vertices[1] = projection.GeoToScreen(tr);
+        coord[2] = texcoord(u0, v1);
+        vertices[2] = projection.GeoToScreen(bl);
+        coord[3] = texcoord(u1, v1);
+        vertices[3] = projection.GeoToScreen(br);
 
-          for (unsigned i = 0; i < 4; ++i) {
-            coord[i].x = uv[i][0] * x_factor;
-            coord[i].y = (bitmap.IsFlipped() ? 1 - uv[i][1] : uv[i][1])
-              * y_factor;
-
-            vertices[i] = projection.GeoToScreen(geo[i]);
-          }
-
-          glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        }
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
       }
-
-      return;
     }
+  };
 
+  /* Large rasters without a georeference mesh: subdivide the corner
+     quadrilateral, so the projection curvature is approximated at
+     least piecewise. */
+  const auto draw_sliced_quad = [&]() {
+    Point2D<GLfloat> coord[4];
+    BulkPixelPoint vertices[4]{};
+    const ScopeVertexPointer vp(vertices);
+    glVertexAttribPointer(OpenGL::Attribute::TEXCOORD, 2, GL_FLOAT, GL_FALSE,
+                          0, coord);
+
+    const unsigned x_steps = std::clamp((texture.GetWidth() + 127u) / 128u,
+                                        1u, 32u);
+    const unsigned y_steps = std::clamp((texture.GetHeight() + 127u) / 128u,
+                                        1u, 32u);
+
+    for (unsigned y = 0; y < y_steps; ++y) {
+      const double v0 = double(y) / y_steps;
+      const double v1 = double(y + 1) / y_steps;
+
+      for (unsigned x = 0; x < x_steps; ++x) {
+        const double u0 = double(x) / x_steps;
+        const double u1 = double(x + 1) / x_steps;
+
+        const auto cell = SliceQuadrilateral(bounds, u0, v0, u1, v1);
+        if (!cell.GetBounds().Overlaps(screen_bounds))
+          continue;
+
+        const GeoPoint geo[4] = {
+          cell.top_left,
+          cell.top_right,
+          cell.bottom_right,
+          cell.bottom_left,
+        };
+        const double uv[4][2] = {
+          {u0, v0},
+          {u1, v0},
+          {u1, v1},
+          {u0, v1},
+        };
+
+        for (unsigned i = 0; i < 4; ++i) {
+          coord[i] = texcoord(uv[i][0], uv[i][1]);
+          vertices[i] = projection.GeoToScreen(geo[i]);
+        }
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+      }
+    }
+  };
+
+  /* A single quadrilateral (flat rasters, e.g. weather overlays): clip to the
+     screen and simply texture via the bilinear inverse */
+  const auto draw_single_quad = [&]() {
     const auto clipped = Clip(bounds, screen_bounds);
+    if (clipped.empty())
+      return;
+
+    Point2D<GLfloat> coord[16];
+    BulkPixelPoint vertices[16];
+    const ScopeVertexPointer vp(vertices);
+    glVertexAttribPointer(OpenGL::Attribute::TEXCOORD, 2, GL_FLOAT, GL_FALSE,
+                          0, coord);
 
     for (const auto &polygon : clipped) {
       const auto &ring = polygon.outer();
@@ -227,27 +294,8 @@ MapOverlayBitmap::Draw([[maybe_unused]] Canvas &canvas,
 
       for (size_t i = 0; i < n; ++i) {
         const auto v = GeoFrom2D(ring[i]);
-
-        auto p = MapInQuadrilateral(bounds, v);
-
-        double tx = p.x * x_factor;
-        double ty = p.y * y_factor;
-
-        if (bitmap.IsFlipped())
-          /* flip within the image's valid texture region, not the
-             whole allocated texture: when the texture is padded to a
-             power-of-two (no GL_..._npot), y_factor < 1, and flipping
-             around 1.0 would sample the uninitialised padding */
-          ty = y_factor - ty;
-
-        /* clamp to the valid texture region: when the texture is
-           padded to a power-of-two, the area beyond [x_factor,y_factor]
-           is uninitialised. This clamp avoids a sampling outside the
-           initialized region, that would cause a {-1,-1} in
-           MapInQuadrilateral and also against texel bleed at edge */
-        coord[i].x = std::clamp(tx, 0.0, x_factor);
-        coord[i].y = std::clamp(ty, 0.0, y_factor);
-
+        const auto p = MapInQuadrilateral(bounds, v);
+        coord[i] = texcoord(p.x, p.y);
         vertices[i] = projection.GeoToScreen(v);
       }
 
@@ -255,12 +303,21 @@ MapOverlayBitmap::Draw([[maybe_unused]] Canvas &canvas,
     }
   };
 
+  const auto render = [&]() {
+    if (grid.IsMesh())
+      draw_mesh();
+    else if (texture.GetWidth() > 512 || texture.GetHeight() > 512)
+      draw_sliced_quad();
+    else
+      draw_single_quad();
+  };
+
   if (blend_mode == MapOverlayBlendMode::ADD) {
     const ScopeTextureMultiplyAlpha blend(alpha);
-    draw_geometry();
+    render();
   } else {
     const ScopeTextureConstantAlpha blend(use_bitmap_alpha, alpha);
-    draw_geometry();
+    render();
   }
 
   glDisableVertexAttribArray(OpenGL::Attribute::TEXCOORD);
