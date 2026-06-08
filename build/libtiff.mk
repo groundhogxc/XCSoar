@@ -50,9 +50,9 @@ endif
 endif
 
 LIBTIFF_LDLIBS += $(LIBGEOTIFF_LDLIBS)
-endif
 
-ifeq ($(GEOTIFF)$(USE_THIRDPARTY_LIBS),yy)
+# LibTiff.cpp uses PROJ directly to apply the datum shift to WGS84, so
+# PROJ is required whenever GeoTIFF support is enabled.
 $(eval $(call pkg-config-library,PROJ,proj))
 LIBTIFF_CPPFLAGS += $(PROJ_CPPFLAGS)
 LIBTIFF_LDLIBS += $(PROJ_LDLIBS)
