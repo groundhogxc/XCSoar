@@ -35,7 +35,8 @@ using ClippedMultiPolygon =
 MapOverlayBitmap::MapOverlayBitmap(Path path)
   :label((path.GetBase() != nullptr ? path.GetBase() : path).c_str())
 {
-  bounds = bitmap.LoadGeoFile(path);
+  grid = bitmap.LoadGeoFile(path);
+  bounds = grid.GetCornerQuadrilateral();
   simple_bounds = bounds.GetBounds();
 }
 

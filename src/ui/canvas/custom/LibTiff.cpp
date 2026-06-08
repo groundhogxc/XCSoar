@@ -23,6 +23,7 @@
 
 #ifdef USE_GEOTIFF
 #include "Geo/Quadrilateral.hpp"
+#include "Geo/ReferencedGrid.hpp"
 #include "Geo/GeoTIFFHeaders.hpp"
 
 #include <proj.h>
@@ -279,12 +280,12 @@ public:
   }
 };
 
-std::pair<UncompressedImage, GeoQuadrilateral>
+std::pair<UncompressedImage, GeoReferencedGrid>
 LoadGeoTiff(Path path)
 {
   TiffLoader tiff(path);
 
-  GeoQuadrilateral bounds;
+  GeoReferencedGrid grid;
 
   {
     auto gtif = GTIFNew(tiff.Get());
@@ -302,6 +303,8 @@ LoadGeoTiff(Path path)
     tiff.GetField(TIFFTAG_IMAGELENGTH, height);
 
     const GeoTiffTransform transform(*gtif, defn);
+
+    GeoQuadrilateral bounds;
     bounds.top_left = transform.PixelToGeoPoint(0, 0);
     bounds.top_right = transform.PixelToGeoPoint(width, 0);
     bounds.bottom_left = transform.PixelToGeoPoint(0, height);
@@ -309,9 +312,11 @@ LoadGeoTiff(Path path)
 
     if (!bounds.Check())
       throw std::runtime_error("Invalid GeoTIFF bounds");
+
+    grid = GeoReferencedGrid(bounds);
   }
 
-  return std::make_pair(LoadTiff(tiff), bounds);
+  return std::make_pair(LoadTiff(tiff), std::move(grid));
 }
 
 #endif
