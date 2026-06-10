@@ -866,6 +866,13 @@ AirspaceWarningManager::ProcessClearanceIntervals(
   const bool inside_cleared = n_cleared_inside > 0;
   const FloatDuration warning_time{config.warning_time};
 
+  /* Tolerance for clearance interval arithmetic.  Use the integer
+     flat projection's grid resolution (~111 m) instead of the
+     smaller kMinFragmentLength: interval endpoints are computed on
+     that grid, so fragments below one grid cell are below the
+     geometric resolution of the data they are derived from. */
+  const double tolerance = GetProjection().GetApproximateScale();
+
   /* Float-geometry cross-check for a surviving residual interval.
      Interval subtraction works in the coarse (~111 m) integer
      projection.  When a non-cleared airspace is nested inside a
@@ -922,7 +929,7 @@ AirspaceWarningManager::ProcessClearanceIntervals(
       for (const auto m : kPredictionMethods) {
         AirspaceWarningInterval iv = w.GetInterval(m);
         if (!iv.IsValid()) continue;
-        if (iv.Length() >= kMinFragmentLength)
+        if (iv.Length() >= tolerance)
           any_meaningful_before = true;
 
         const AirspaceWarningInterval iv_before = iv;
@@ -936,7 +943,7 @@ AirspaceWarningManager::ProcessClearanceIntervals(
         }
         SortByEntryDistance(buf.data(), buf.data() + n, m);
         for (std::size_t i = 0; i < n; ++i) {
-          SubtractInterval(iv, buf[i]->GetInterval(m));
+          SubtractInterval(iv, buf[i]->GetInterval(m), tolerance);
           if (!iv.IsValid()) break;
         }
 
@@ -967,7 +974,7 @@ AirspaceWarningManager::ProcessClearanceIntervals(
       for (const auto m : kPredictionMethods) {
         const AirspaceWarningInterval &iv = w.GetInterval(m);
         if (!iv.IsValid()) continue;
-        if (iv.Length() < kMinFragmentLength) continue;
+        if (iv.Length() < tolerance) continue;
         if (residual_covered_in_float(iv)) {
           /* Phantom residual from integer-projection non-nesting;
              really inside a clearance. */
@@ -985,7 +992,7 @@ AirspaceWarningManager::ProcessClearanceIntervals(
            by a clearance.  If no method produced a meaningful
            interval and no clearance overlapped it (e.g. all
            predictions land inside a narrow airspace that is already
-           < kMinFragmentLength away from the exit, with the
+           less than the tolerance away from the exit, with the
            clearance elsewhere), the WARNING_INSIDE is unrelated to
            clearance and must not be silently suppressed. */
         if (any_meaningful_before || any_consumed_by_clearance)
@@ -1079,7 +1086,7 @@ AirspaceWarningManager::ProcessClearanceIntervals(
       }
       SortByEntryDistance(buf.data(), buf.data() + n, m);
       for (std::size_t i = 0; i < n; ++i) {
-        SubtractInterval(iv, buf[i]->GetInterval(m));
+        SubtractInterval(iv, buf[i]->GetInterval(m), tolerance);
         if (!iv.IsValid()) break;
       }
 
@@ -1089,7 +1096,7 @@ AirspaceWarningManager::ProcessClearanceIntervals(
       if (changed) any_changed = true;
 
       if (!iv.IsValid() ||
-          (changed && iv.Length() < kMinFragmentLength)) {
+          (changed && iv.Length() < tolerance)) {
         w.SetInterval(m, AirspaceWarningInterval::Invalid());
       } else if (residual_covered_in_float(iv)) {
         /* Interval subtraction left this (possibly unchanged because
