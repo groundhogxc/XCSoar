@@ -36,6 +36,12 @@ Profile::GetPath() noexcept
   return startProfileFile;
 }
 
+AllocatedPath
+Profile::GetDefaultPath() noexcept
+{
+  return BuildProfilePath(Path(XCSPROFILE));
+}
+
 void
 Profile::Load() noexcept
 {

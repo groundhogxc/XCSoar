@@ -24,6 +24,14 @@ Path
 GetPath() noexcept;
 
 /**
+ * Returns the absolute path of the default profile file. Unlike
+ * GetPath(), this is available before the profile has been loaded.
+ */
+[[gnu::pure]]
+AllocatedPath
+GetDefaultPath() noexcept;
+
+/**
  * Loads the profile files
  */
 void
