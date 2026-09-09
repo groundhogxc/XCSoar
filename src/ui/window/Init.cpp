@@ -17,7 +17,11 @@
 ScreenGlobalInit::ScreenGlobalInit([[maybe_unused]] unsigned antialiasing_samples)
 #ifdef ANDROID
   :display(EGL_DEFAULT_DISPLAY, antialiasing_samples)
-#elif defined(ENABLE_SDL) || defined(USE_GLX) || (defined(USE_EGL) && defined(USE_X11))
+#elif defined(ENABLE_SDL) || defined(USE_GLX) || defined(MESA_KMS) || \
+  defined(USE_WAYLAND) || (defined(USE_EGL) && defined(USE_X11))
+  /* the other UI::Display variants - GDI and the stub used by the
+     framebuffer targets (Kobo, VFB) - have no constructor taking a
+     sample count */
   :display(antialiasing_samples)
 #endif
 {
